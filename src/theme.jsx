@@ -3,7 +3,7 @@ import { createTheme } from '@mui/material/styles';
 
 // Controls the dark / light mode theme
 export const tokens = (mode) => ({
-    ...(mode === dark ?
+    ...(mode === 'dark' ?
         {
             grey: {
                 100: "#e0e0e0",
@@ -126,7 +126,7 @@ export const themeSettings = (mode) =>  {
     const colors = tokens(mode);
 
     return {
-        pallete: {
+        palette: {
             mode: mode,
             ...(mode === 'dark' ? 
                 {
@@ -196,16 +196,16 @@ export const themeSettings = (mode) =>  {
 };
 
 // Creating context for easy access for dark / light and ability to switch between the two.
-export const colorModeContext = createContext({
-    toggleColorMode: () => {}
+export const ColorModeContext = createContext({
+    toggleColorMode: () => {},
 });
 
 export const useMode = () => {
-    const [mode, setMode] = useState('light');
+    const [mode, setMode] = useState('dark');
 
     const colorMode = useMemo( () => ({
         toggleColorMode: () => 
-            setMode((prev) => (prev === 'dark' ? 'light' : 'dark')),
+            setMode((prev) => (prev === 'light' ? 'dark' : 'light')),
         }), 
         []
     );
