@@ -1,5 +1,6 @@
 import { ColorModeContext, useMode } from './theme';
 import Topbar from './scenes/global/Topbar';
+import Sidebar from './scenes/global/Sidebar';
 import Dashboard from './scenes/dashboard';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { Routes, Route } from 'react-router-dom';
@@ -15,6 +16,7 @@ function App() {
         {/* Resets css to defaults*/}
         <CssBaseline />
         <div className = "app">
+          <Sidebar />
           <main className = "content">
             <Topbar />
             <Routes>

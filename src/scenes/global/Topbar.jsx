@@ -5,7 +5,7 @@ import InputBase from '@mui/material/InputBase';
 import LightModeOutlinedIcon  from '@mui/icons-material/LightModeOutlined';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import NotificationsOffOutlinedIcon from '@mui/icons-material/NotificationsOffOutlined';
-import  SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined';;
+import  SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
