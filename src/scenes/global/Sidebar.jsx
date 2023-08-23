@@ -143,8 +143,8 @@ const Sidebar = () => {
                         </Typography>
 
                         <Item 
-                            title = 'Manage Teachers'
-                            to = '/teachers'
+                            title = 'Manage Team'
+                            to = '/team'
                             icon = {<PeopleOutlinedIcon />}
                             selected = {selected}
                             setSelected = {setSelected}
@@ -173,8 +173,8 @@ const Sidebar = () => {
                         </Typography>
 
                         <Item 
-                            title = 'Profile'
-                            to = '/profile'
+                            title = 'Profile Form'
+                            to = '/form'
                             icon = {<PersonOutlinedIcon />}
                             selected = {selected}
                             setSelected = {setSelected}
