@@ -18,7 +18,7 @@ const Team = () => {
         {field: 'age', headerName: 'AGE', type: 'number', headerAlign: 'left', align: 'left'},
         {field: 'phone', headerName: 'PHONE NUMBER', flex: 1},
         {field: 'email', headerName: 'EMAIL ADDRESS', flex: 1},
-        {field: 'access', headerName: 'ACCESS LEVEL', flex: 1, renderCell: ({row: {access}}) => {
+        {field: 'access', headerName: 'ACCESS LEVEL', flex: 1, headerAlign: 'center', renderCell: ({row: {access}}) => {
             return(
                 <Box 
                     width = '60%'
@@ -47,10 +47,33 @@ const Team = () => {
 
     return (
         <Box m = '20px'>
-            <Header title = 'Team' subtitle = 'Managing Team Members' />
+            <Header title = 'TEAM' subtitle = 'Managing Team Members' />
             <Box 
                 m = '40px 0 0 0'
                 height = '75vh'
+                // Adjusting the properties for the MUI DataGrid
+                sx = {{
+                    '& .MuiDataGrid-root': {
+                        border: 'none',
+                    }, 
+                    '& .MuiDataGrid-cell': {
+                        borderBottom: 'none',
+                    },
+                    '& .MuiDataGrid-columnHeaders': {
+                        backgroundColor: colors.blueAccent[700],
+                        borderBottom: 'none'
+                    },
+                    '& .MuiDataGrid-virtualScroller': {
+                        backgroundColor: colors.primary[400],
+                    },
+                    '& .MuiDataGrid-footerContainer': {
+                        borderTop: 'none',
+                        backgroundColor: colors.blueAccent[700]
+                    },
+                    '& .name-column--cell' : {
+                        color: colors.greenAccent[300],
+                    }
+                }}
             >
                 <DataGrid
                     rows = {mockDataTeam}
