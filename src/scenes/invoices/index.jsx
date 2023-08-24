@@ -1,4 +1,5 @@
 import { Box, Typography, useTheme } from '@mui/material';
+import { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
 // Mock... TODO: Pull info from real dataset
@@ -8,6 +9,7 @@ import Header from '../../components/Header';
 const Invoices = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const [selected, setSelected] = useState([]);
 
     const columns = [
         { field: 'id', headerName: 'ID'}, 
@@ -60,8 +62,11 @@ const Invoices = () => {
                     rows = {mockDataInvoices}
                     columns = {columns}
                     // TODO: Handle what should happen to selected items
-                    onRowSelectionModelChange={(selected) => console.log(selected)}
+                    onRowSelectionModelChange={(ids) => setSelected(ids)}
                 />
+                {selected.length > 0 && (
+                    <button autoFocus>Implement Some Logic to Handle this!</button>
+                )}
             </Box>
         </Box>
     )

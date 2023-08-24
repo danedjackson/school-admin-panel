@@ -27,7 +27,7 @@ export const mockDataTeam = [
   },
   {
     id: 4,
-    name: "Anya Stark",
+    name: "Anya Forger",
     email: "anyastark@gmail.com",
     age: 16,
     phone: "(921)425-6742",
@@ -111,7 +111,7 @@ export const mockDataContacts = [
   },
   {
     id: 4,
-    name: "Anya Stark",
+    name: "Anya Forger",
     email: "anyastark@gmail.com",
     age: 16,
     phone: "(921)425-6742",
@@ -226,7 +226,7 @@ export const mockDataInvoices = [
   },
   {
     id: 4,
-    name: "Anya Stark",
+    name: "Anya Forger",
     email: "anyastark@gmail.com",
     cost: "80.55",
     phone: "(921)425-6742",
