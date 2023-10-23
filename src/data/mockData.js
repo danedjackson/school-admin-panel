@@ -1,4 +1,38 @@
 import { tokens } from "../theme";
+import React, {useState, useEffect} from 'react';
+
+export const useUserData = () => {
+  const [userRows, setUserRows] = useState([]);
+  const endpoint = `http://localhost:8080/api/user/type/1`;
+
+  useEffect(() => {
+    fetch(endpoint)
+      .then((response) => {
+        if(!response.ok) {
+          console.log(response);
+          throw new Error(`Network response was not ok when fetching users. Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        //Transforms data to add "id" field, which is required for DataGrid display
+        const rowsWithIds = data.response.map((row, index) => ({
+          id: index + 1,
+          ...row
+        }));
+
+        setUserRows(rowsWithIds);
+      })
+      .catch((error) => {
+        console.error(`Error fetching data:`, error)
+      });
+
+  }, []);
+
+  return {
+    userRows,
+  };
+}
 
 export const mockDataTeam = [
   {

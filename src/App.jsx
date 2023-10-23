@@ -5,7 +5,7 @@ import Topbar from './scenes/global/Topbar';
 import Sidebar from './scenes/global/Sidebar';
 import Dashboard from './scenes/dashboard';
 import Contacts from './scenes/contacts';
-import Team from './scenes/team';
+import Students from './scenes/students';
 import Invoices from './scenes/invoices';
 import Form from './scenes/form';
 import Calendar from './scenes/calendar';
@@ -27,7 +27,7 @@ function App() {
             <Topbar />
             <Routes>
               <Route path = "/" element = {<Dashboard />} />
-              <Route path = "/team" element = {<Team />} />
+              <Route path = "/students" element = {<Students />} />
               <Route path = "/contacts" element = {<Contacts />} />
               <Route path = "/invoices" element = {<Invoices />} />
               <Route path = "/form" element = {<Form />} />
