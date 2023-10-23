@@ -1,16 +1,15 @@
 import { tokens } from "../theme";
 import React, {useState, useEffect} from 'react';
 
-export const useUserData = () => {
-  const [userRows, setUserRows] = useState([]);
-  const endpoint = `http://localhost:8080/api/user/type/1`;
+export const useTeacherData = () => {
+  const [teacherRows, setTeacherRows] = useState([]);
+  const endpoint = `http://localhost:8080/api/user/type/0`;
 
   useEffect(() => {
     fetch(endpoint)
       .then((response) => {
         if(!response.ok) {
-          console.log(response);
-          throw new Error(`Network response was not ok when fetching users. Status: ${response.status}`);
+          throw new Error(`Network response was not ok when fetching teacher data. Status: ${response.status}`);
         }
         return response.json();
       })
@@ -18,19 +17,48 @@ export const useUserData = () => {
         //Transforms data to add "id" field, which is required for DataGrid display
         const rowsWithIds = data.response.map((row, index) => ({
           id: index + 1,
-          ...row
+          ...row,
         }));
 
-        setUserRows(rowsWithIds);
+        setTeacherRows(rowsWithIds);
       })
       .catch((error) => {
-        console.error(`Error fetching data:`, error)
+        console.error(`Error fetching teacher data:`, error)
       });
-
   }, []);
 
   return {
-    userRows,
+    teacherRows,
+  };
+}
+
+export const useStudentData = () => {
+  const [studentRows, setStudentRows] = useState([]);
+  const endpoint = `http://localhost:8080/api/user/type/1`;
+
+  useEffect(() => {
+    fetch(endpoint)
+      .then((response) => {
+        if(!response.ok) {
+          throw new Error(`Network response was not ok when fetching student data. Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        const studentRowsWithId = data.response.map((row, index) => ({
+          id: index + 1,
+          ...row,
+        }));
+        setStudentRows(studentRowsWithId);
+      })
+      .catch((error) => {
+        console.error(`Error fetching student data:`, error)
+      });
+  }, []);
+
+  return {
+    studentRows
   };
 }
 

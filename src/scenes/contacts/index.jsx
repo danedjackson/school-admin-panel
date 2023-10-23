@@ -2,19 +2,21 @@ import { Box, useTheme } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
 // Mock... TODO: Pull info from real dataset
-import { mockDataContacts } from '../../data/mockData';
+import { mockDataContacts, useStudentData } from '../../data/mockData';
 import Header from '../../components/Header';
 
 const Contacts = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const { studentRows } = useStudentData();
 
     const columns = [
         { field: 'id', headerName: 'ID'}, 
         { field: 'registrarId', headerName: 'REGISTRAR ID' },
-        { field: 'name', headerName: 'NAME', flex: 1, cellClassName: 'name-column--cell' },
+        { field: 'firstName', headerName: 'FIRST NAME', flex: 1, cellClassName: 'first-name-column--cell' },
+        { field: 'lastName', headerName: 'LAST NAME', flex: 1, cellClassName: 'last-name-column--cell' },
         { field: 'age', headerName: 'AGE', type: 'number', headerAlign: 'left', align: 'left' },
-        { field: 'phone', headerName: 'PHONE NUMBER', flex: 1 },
+        { field: 'contactNumber', headerName: 'PHONE NUMBER', flex: 1 },
         { field: 'email', headerName: 'EMAIL ADDRESS', flex: 1 },
         { field: 'address', headerName: 'ADDRESS', flex: 1 },
         { field: 'city', headerName: 'CITY' },
@@ -49,13 +51,16 @@ const Contacts = () => {
                     '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
                         color: `${colors.grey[100]} !important`,
                     },
-                    '& .name-column--cell' : {
+                    '& .first-name-column--cell' : {
+                        color: colors.greenAccent[300],
+                    },
+                    '& .last-name-column--cell' : {
                         color: colors.greenAccent[300],
                     }
                 }}
             >
                 <DataGrid
-                    rows = {mockDataContacts}
+                    rows = {studentRows}
                     columns = {columns}
                     components = {{
                         Toolbar: GridToolbar
