@@ -45,7 +45,6 @@ export const useStudentData = () => {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
         const studentRowsWithId = data.response.map((row, index) => ({
           id: index + 1,
           ...row,
@@ -60,6 +59,86 @@ export const useStudentData = () => {
   return {
     studentRows
   };
+}
+
+export const scoreData = (grade) => {
+  const [scoreRows, setScoreRows] = useState([]);
+  const endpoint = `http://localhost:8080/api/score/all`;
+  const subjects = [
+    "art",
+    "english",
+    "mathematics",
+    "phonics",
+    "science"
+  ]
+
+  useEffect(() => {
+    fetch(endpoint)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Network response was not ok when fetching score data. Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        const studentAverages = [];
+        let index = 0;
+        data.response.forEach(item => {
+          const {
+            studentId,
+            grade,
+            firstName,
+            middleName,
+            lastName,
+            subject,
+            score,
+          } = item;
+
+          // Check if the student already exists in the array
+          const studentIndex = studentAverages.findIndex(student => student.studentId === studentId);
+
+          if (studentIndex === -1) {
+            // If the student doesn't exist, add a new entry
+            studentAverages.push({
+              id: index + 1,
+              studentId,
+              grade,
+              firstName,
+              middleName,
+              lastName,
+              averages: {
+                [subject]: {
+                  scores: [parseInt(score)],
+                  average: parseInt(score),
+                },
+              },
+            });
+            
+            index+=1;
+          } else {
+            // If the student already exists, update their subject averages
+            const subjectData = studentAverages[studentIndex].averages[subject];
+            if (!subjectData) {
+              studentAverages[studentIndex].averages[subject] = {
+                scores: [parseInt(score)],
+                average: parseInt(score),
+              };
+            } else {
+              subjectData.scores.push(parseInt(score));
+              const sum = subjectData.scores.reduce((acc, score) => acc + score, 0);
+              subjectData.average = sum / subjectData.scores.length;
+            }
+          }
+        });
+
+        setScoreRows(studentAverages);
+      })
+      .catch(error => {
+        console.error(`Error fetching scores data:`, error);
+      });
+  }, []);
+
+  return scoreRows;
 }
 
 export const mockDataTeam = [
