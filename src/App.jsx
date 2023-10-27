@@ -8,6 +8,7 @@ import Contacts from './scenes/contacts';
 import Teachers from './scenes/teachers';
 import Scores from './scenes/scores';
 import Form from './scenes/form';
+import ScoreForm from './scenes/score-form';
 import Calendar from './scenes/calendar';
 import FAQ from './scenes/faq';
 
@@ -31,6 +32,7 @@ function App() {
               <Route path = "/contacts" element = {<Contacts />} />
               <Route path = "/scores" element = {<Scores />} />
               <Route path = "/form" element = {<Form />} />
+              <Route path = "/score-form" element = {<ScoreForm />} />
               <Route path = "/calendar" element = {<Calendar />} />
               <Route path = "/faq" element = {<FAQ />} />
             </Routes>

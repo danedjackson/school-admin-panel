@@ -16,6 +16,7 @@ import PieChartOutlinedIcon from '@mui/icons-material/PieChartOutlined';
 import TimelineOutlinedIcon from '@mui/icons-material/TimelineOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
+import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 
 const Item = ({title, to, icon, selected, setSelected}) => {
     const theme = useTheme();
@@ -106,6 +107,7 @@ const Sidebar = () => {
                                     style = {{ cursor: 'pointer', borderRadius:'50%' }}
                                 />
                             </Box>
+                            {/* TODO: Pull logged in User info here and display name and role */}
                             <Box textAlign = 'center'>
                                 <Typography 
                                     variant = 'h2' 
@@ -173,9 +175,16 @@ const Sidebar = () => {
                         </Typography>
 
                         <Item 
-                            title = 'Profile Form'
+                            title = 'Add User'
                             to = '/form'
                             icon = {<PersonOutlinedIcon />}
+                            selected = {selected}
+                            setSelected = {setSelected}
+                        />
+                        <Item 
+                            title = 'Add Student Scores'
+                            to = '/score-form'
+                            icon = {<AssessmentOutlinedIcon />}
                             selected = {selected}
                             setSelected = {setSelected}
                         />
