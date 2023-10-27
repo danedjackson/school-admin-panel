@@ -1,4 +1,4 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, Select, MenuItem, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -115,6 +115,23 @@ const Form = () => {
                 helperText={touched.address && errors.address}
                 sx={{ gridColumn: "span 3" }}
               />
+              <Typography sx={{gridColumn: "span 3"}}>
+                Type of User
+              </Typography>
+              <Select
+                labelId="type-select-label"
+                id="type-select"
+                name="type"
+                variant="filled"
+                value={values.type}
+                label="Type of User"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                sx={{gridColumn: "span 3"}}
+              >
+                <MenuItem value={0}>Teacher</MenuItem>
+                <MenuItem value={1}>Student</MenuItem>
+              </Select>
             </Box>
             <Box display="flex" justifyContent="left" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
@@ -147,6 +164,7 @@ const initialVals = {
   email: "",
   contact: "",
   address: "",
+  type: 1,
 };
 
 export default Form;
