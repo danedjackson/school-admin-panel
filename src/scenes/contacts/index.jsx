@@ -2,7 +2,7 @@ import { Box, useTheme } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
 // Mock... TODO: Pull info from real dataset
-import { mockDataContacts, getStudentData } from '../../data/endpoints';
+import { getStudentData } from '../../data/endpoints';
 import Header from '../../components/Header';
 
 const Contacts = () => {
@@ -11,8 +11,8 @@ const Contacts = () => {
     const { studentRows } = getStudentData();
 
     const columns = [
-        { field: 'id', headerName: 'ID'}, 
-        { field: 'registrarId', headerName: 'REGISTRAR ID' },
+        //{ field: 'id', headerName: 'ID'}, 
+        { field: 'id', headerName: 'REGISTRAR ID' },
         { field: 'firstName', headerName: 'FIRST NAME', flex: 1, cellClassName: 'first-name-column--cell' },
         { field: 'lastName', headerName: 'LAST NAME', flex: 1, cellClassName: 'last-name-column--cell' },
         { field: 'age', headerName: 'AGE', type: 'number', headerAlign: 'left', align: 'left' },

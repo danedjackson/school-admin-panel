@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
 // Mock... TODO: Pull info from real dataset
-import { mockDataInvoices, scoreData } from '../../data/endpoints';
+import { scoreData } from '../../data/endpoints';
 import Header from '../../components/Header';
 
 const Scores = () => {
@@ -20,45 +20,42 @@ const Scores = () => {
         { field: 'lastName', headerName: 'LAST NAME', flex: 1 },
         { field: 'grade', headerName: 'GRADE', flex: 1 },
         {
-            field: 'mathematics',
-            headerName: 'MATHEMATICS',
-            flex: 1,
-            type: 'number', // Set the column type to 'number'
+            field: 'mathematics', headerName: 'MATHEMATICS', flex: 1, type: 'number', headerAlign: 'left', align: 'left',
             valueGetter: (params) => params.row.averages?.mathematics?.average || null,
             renderCell: (params) => {
             return (
                 <Typography color={colors.greenAccent[500]}>
-                {params.value === null ? "N/A" : params.value}
+                    {params.value === null ? "N/A" : params.value}
                 </Typography>
             );
             }
         },
-        { field: 'science', headerName: 'SCIENCE', flex: 1, type: 'number',
-            valueGetter: (params) => params.row.averages?.science?.average || null,
+        { field: 'science', headerName: 'SCIENCE', flex: 1, type: 'number', 
+            valueGetter: (params) => params.row.averages?.science?.average || null, headerAlign: 'left', align: 'left',
             renderCell: (params) => {
             return (
                 <Typography color={colors.greenAccent[500]}>
-                {params.value === null ? "N/A" : params.value}
+                    {params.value === null ? "N/A" : params.value}
                 </Typography>
             );
             }
         },
         { field: 'english', headerName: 'ENGLISH', flex: 1, type: 'number', 
-            valueGetter: (params) => params.row.averages?.english?.average || null,
+            valueGetter: (params) => params.row.averages?.english?.average || null, headerAlign: 'left', align: 'left',
             renderCell: (params) => {
             return (
                 <Typography color={colors.greenAccent[500]}>
-                {params.value === null ? "N/A" : params.value}
+                    {params.value === null ? "N/A" : params.value}
                 </Typography>
             );
             }
         },
         { field: 'art', headerName: 'ART', flex: 1, type: 'number',
-            valueGetter: (params) => params.row.averages?.art?.average || null,
+            valueGetter: (params) => params.row.averages?.art?.average || null, headerAlign: 'left', align: 'left',
             renderCell: (params) => {
             return (
                 <Typography color={colors.greenAccent[500]}>
-                {params.value === null ? "N/A" : params.value}
+                    {params.value === null ? "N/A" : params.value}
                 </Typography>
             );
             }
