@@ -2,13 +2,13 @@ import { Box, useTheme } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
 // Mock... TODO: Pull info from real dataset
-import { mockDataContacts, useStudentData } from '../../data/mockData';
+import { mockDataContacts, getStudentData } from '../../data/endpoints';
 import Header from '../../components/Header';
 
 const Contacts = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const { studentRows } = useStudentData();
+    const { studentRows } = getStudentData();
 
     const columns = [
         { field: 'id', headerName: 'ID'}, 

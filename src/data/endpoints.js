@@ -32,7 +32,7 @@ export const useTeacherData = () => {
   };
 }
 
-export const useStudentData = () => {
+export const getStudentData = () => {
   const [studentRows, setStudentRows] = useState([]);
   const endpoint = `http://localhost:8080/api/user/type/1`;
 
@@ -61,6 +61,7 @@ export const useStudentData = () => {
   };
 }
 
+//TODO: Refactor this to only fetch information. Have transformation bit done elsewhere
 export const scoreData = (grade) => {
   const [scoreRows, setScoreRows] = useState([]);
   const endpoint = `http://localhost:8080/api/score/all`;

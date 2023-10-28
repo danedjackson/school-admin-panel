@@ -5,7 +5,9 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import Autocomplete from '@mui/material/Autocomplete';
-import { saveStudentScoreData } from "../../data/mockData";
+import { saveStudentScoreData } from "../../data/endpoints";
+import { getStudentDropdownData } from '../../data/transforms/student';
+import { getAssignmentDropdownData, getSubjectDropdownData } from '../../data/transforms/subject';
 
 const getDate = () => {
   const date = new Date();
@@ -25,28 +27,11 @@ const ScoreForm = () => {
   // TODO: Implement some caching of teacher ID
   const teacherId = "653182ff2ddb51f6e2341098";
 
-  const studentNames = [
-    { label: 'Dane Dwight Jackson', id: "653153e84849d7cdc02194c9", grade: "5" },
-    { label: 'Denise Deborah Jackson', id: "653182ad2ddb51f6e2341097", grade: "5" },
-    { label: 'Jamoi Abna Robinson', id: "6536cbc1240dbc727c084f16", grade: "6" },
-    { label: 'Vondeen Vonet Robinson', id: "6536f33d37581d225ba89b89", grade: "5" },
-  ];
+  const studentNames = getStudentDropdownData();
 
-  const assignmentType = [
-    { label: 'Homework' },
-    { label: "Classwork" },
-    { label: "Unit Test" },
-    { label: "Mid-Term Examination" },
-    { label: "End of Year Examination" }
-  ];
+  const assignmentType = getAssignmentDropdownData();
 
-  const subjects = [
-    { label: 'Art' },
-    { label: "English" },
-    { label: "Mathematics" },
-    { label: "Phonics" },
-    { label: "Science" }
-  ];
+  const subjects = getSubjectDropdownData();
 
   // Handle form submission
   const handleFormSubmit = (values) => {
@@ -60,11 +45,12 @@ const ScoreForm = () => {
     values.teacherId = teacherId;
 
     const studentNameRecord = studentNames.find(student => student.label === selectedName);
+    const assignmentRecord = assignmentType.find(assignment => assignment.label === selectedAssignmentType);
 
     values.studentId = studentNameRecord.id;
     values.grade = studentNameRecord.grade;
     values.dateRecorded = new Date();
-    values.assignmentId = `${getDate()}${values.assignmentType}`;
+    values.assignmentId = `${getDate()}${assignmentRecord.id}`;
     
     if (values.studentId === null) {
       alert("Please select a valid student name and subject.");
@@ -73,6 +59,9 @@ const ScoreForm = () => {
           .then((response) => {
             if(response.httpStatus == "OK") {
                 alert("Successfully stored score");
+            }
+            else {
+                alert("Failed to save student score data");
             }
           })
           .catch((error) => {
