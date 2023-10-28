@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
 // Mock... TODO: Pull info from real dataset
-import { mockDataInvoices, scoreData } from '../../data/mockData';
+import { mockDataInvoices, scoreData } from '../../data/endpoints';
 import Header from '../../components/Header';
 
 const Scores = () => {
