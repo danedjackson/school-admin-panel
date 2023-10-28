@@ -1,5 +1,5 @@
 import { tokens } from "../theme";
-import React, {useState, useEffect} from 'react';
+import {useState, useEffect} from 'react';
 
 export const useTeacherData = () => {
   const [teacherRows, setTeacherRows] = useState([]);
@@ -130,7 +130,7 @@ export const scoreData = (grade) => {
             }
           }
         });
-
+        
         setScoreRows(studentAverages);
       })
       .catch(error => {
@@ -139,6 +139,30 @@ export const scoreData = (grade) => {
   }, []);
 
   return scoreRows;
+}
+
+export const saveStudentScoreData = async (request) => {
+  
+  const endpoint = `http://localhost:8080/api/score`;
+  
+  try {
+    const response = await fetch(endpoint, {
+      method: `POST`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(request),
+    });
+    if (!response.ok) {
+      throw new Error(`Network response was not ok when saving student score data. Status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error(`Error saving student score data: ${error}`);
+  }
+
 }
 
 export const mockDataTeam = [

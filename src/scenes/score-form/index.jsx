@@ -1,10 +1,19 @@
+import React, { useState } from 'react';
 import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import Autocomplete from '@mui/material/Autocomplete';
-import { useState } from 'react';
+import { saveStudentScoreData } from "../../data/mockData";
+
+const getDate = () => {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}${month}${day}`;
+}
 
 const ScoreForm = () => {
   const [selectedName, setSelectedName] = useState(null);
@@ -12,56 +21,93 @@ const ScoreForm = () => {
   const [selectedAssignmentType, setAssignmentType] = useState(null);
 
   const isNotMobileDevice = useMediaQuery("(min-width:600px)");
-  //TODO: Handle form submission
-  const handleFormSubmit = (values) => {
-    values.name = selectedName;
-    values.subject = selectedSubject;
-    values.assignmentType = selectedAssignmentType;
-    values.teacherId = teacherId;
-    values.studentId = studentNames.find(student => student.label == selectedName);
 
-    if (values.name === null || values.subject === null || values.assignmentType == null || values.studentId == null) {
-      console.log("Please select a valid student name and subject.");
-    } else {
-      console.log(values);
-    }
-  };
-  
-  //TODO: Implement some caching of teacher ID
+  // TODO: Implement some caching of teacher ID
   const teacherId = "653182ff2ddb51f6e2341098";
 
   const studentNames = [
-    { label: 'Dane Dwight Jackson', id: "653153e84849d7cdc02194c9" },
-    { label: 'Denise Deborah Jackson', id: "653182ad2ddb51f6e2341097" },
-    { label: 'Jamoi Abna Robinson', id: "6536cbc1240dbc727c084f16" },
-    { label: 'Vondeen Vonet Robinson', id: "6536f33d37581d225ba89b89" },
-    
+    { label: 'Dane Dwight Jackson', id: "653153e84849d7cdc02194c9", grade: "5" },
+    { label: 'Denise Deborah Jackson', id: "653182ad2ddb51f6e2341097", grade: "5" },
+    { label: 'Jamoi Abna Robinson', id: "6536cbc1240dbc727c084f16", grade: "6" },
+    { label: 'Vondeen Vonet Robinson', id: "6536f33d37581d225ba89b89", grade: "5" },
   ];
 
   const assignmentType = [
-    {label: 'Homework'},
-    {label: "Classwork"},
-    {label: "Unit Test"},
-    {label: "Mid-Term Examination"},
-    {label: "End of Year Examination"}
-  ]
+    { label: 'Homework' },
+    { label: "Classwork" },
+    { label: "Unit Test" },
+    { label: "Mid-Term Examination" },
+    { label: "End of Year Examination" }
+  ];
 
   const subjects = [
-    {label: 'Art'},
-    {label: "English"},
-    {label: "Mathematics"},
-    {label: "Phonics"},
-    {label: "Science"}
+    { label: 'Art' },
+    { label: "English" },
+    { label: "Mathematics" },
+    { label: "Phonics" },
+    { label: "Science" }
   ];
+
+  // Handle form submission
+  const handleFormSubmit = (values) => {
+    if (selectedName === null | selectedSubject === null || selectedAssignmentType === null){
+        return alert("Please ensure a valid student name, subject and assignment type are present");
+    }
+    // Create Request Object
+    values.name = selectedName;
+    values.subject = selectedSubject?.toLowerCase();
+    values.assignmentType = selectedAssignmentType;
+    values.teacherId = teacherId;
+
+    const studentNameRecord = studentNames.find(student => student.label === selectedName);
+
+    values.studentId = studentNameRecord.id;
+    values.grade = studentNameRecord.grade;
+    values.dateRecorded = new Date();
+    values.assignmentId = `${getDate()}${values.assignmentType}`;
+    
+    if (values.studentId === null) {
+      alert("Please select a valid student name and subject.");
+    } else {
+        saveStudentScoreData(values)
+          .then((response) => {
+            if(response.httpStatus == "OK") {
+                alert("Successfully stored score");
+            }
+          })
+          .catch((error) => {
+            console.error("Error while saving student score data:", error);
+          });
+    }
+  };
+  
+  const checkoutSchema = yup.object().shape({
+    score: yup.string().required("Score is Required"),
+  });
+
+  const initialVals = {
+    name: null,
+    subject: null,
+    score: "",
+    comment: "",
+    assignmentType: null,
+  };
 
   return (
     <Box m="20px">
       <Header title="CREATE USER" subtitle="Create a New User Profile" />
 
       <Formik
-        onSubmit={handleFormSubmit}
+        onSubmit={(values, {resetForm}) => {
+            handleFormSubmit(values);
+            resetForm({values: initialVals});
+            setSelectedName(null);
+            setSelectedSubject(null);
+            setAssignmentType(null);
+        }}
         initialValues={initialVals}
         validationSchema={checkoutSchema}
+        
       >
         {({
           values,
@@ -80,57 +126,57 @@ const ScoreForm = () => {
                 "& > div": { gridColumn: isNotMobileDevice ? undefined : "span 3" },
               }}
             >
-              <Autocomplete 
+              <Autocomplete
                 disablePortal
-                id = "name-dropdown"
-                options = {studentNames}
-                value = {selectedName}
+                id="name-dropdown"
+                options={studentNames}
+                value={selectedName}
                 isOptionEqualToValue={(option, value) => option.label.toLowerCase().includes(value.toLowerCase())}
                 onInputChange={(_, newValue) => setSelectedName(newValue)}
-                sx = {{ gridColumn: "span 3" }}
-                renderInput={(params) => 
-                    <TextField 
-                        variant = "filled" 
-                        {...params} 
-                        label="Student Name" 
-                    />
-                }
+                sx={{ gridColumn: "span 3" }}
+                renderInput={(params) => (
+                  <TextField
+                    variant="filled"
+                    {...params}
+                    label="Student Name"
+                  />
+                )}
               />
-              <Autocomplete 
+              <Autocomplete
                 disablePortal
-                id = "subject-dropdown"
-                options = {subjects}
-                value = {selectedSubject}
-                varient = "filled"
+                id="subject-dropdown"
+                options={subjects}
+                value={selectedSubject}
+                varient="filled"
                 isOptionEqualToValue={(option, value) => option.label === value}
                 onInputChange={(_, newValue) => setSelectedSubject(newValue)}
-                sx = {{ gridColumn: "span 2" }}
-                renderInput={(params) => 
-                    <TextField 
-                        variant = "filled" 
-                        {...params} 
-                        label="Subject" 
-                        onKeyDown = {(e) => {e.preventDefault();}}
-                    />
-                }
+                sx={{ gridColumn: "span 2" }}
+                renderInput={(params) => (
+                  <TextField
+                    variant="filled"
+                    {...params}
+                    label="Subject"
+                    onKeyDown={(e) => { e.preventDefault(); }}
+                  />
+                )}
               />
-              <Autocomplete 
-                disablePortal   
-                id = "assignment-type-dropdown"
-                options = {assignmentType}
-                value = {selectedAssignmentType}
-                varient = "filled"
+              <Autocomplete
+                disablePortal
+                id="assignment-type-dropdown"
+                options={assignmentType}
+                value={selectedAssignmentType}
+                varient="filled"
                 isOptionEqualToValue={(option, value) => option.label === value}
                 onInputChange={(_, newValue) => setAssignmentType(newValue)}
-                sx = {{ gridColumn: "span 2" }}
-                renderInput={(params) => 
-                    <TextField 
-                        variant = "filled" 
-                        {...params} 
-                        label="Assignment Type" 
-                        onKeyDown = {(e) => {e.preventDefault();}}
-                    />
-                }
+                sx={{ gridColumn: "span 2" }}
+                renderInput={(params) => (
+                  <TextField
+                    variant="filled"
+                    {...params}
+                    label="Assignment Type"
+                    onKeyDown={(e) => { e.preventDefault(); }}
+                  />
+                )}
               />
               <TextField
                 fullWidth
@@ -146,27 +192,28 @@ const ScoreForm = () => {
                 sx={{ gridColumn: "span 1" }}
               />
             </Box>
-            
+
             <Box
-                display = "flex"
-                justifyContent="left"
-                mt = "20px"
-                sx={{ gridColumn: "span 3" }}>
-                    <TextField
-                        fullWidth
-                        variant="filled"
-                        type="text"
-                        label="Comment"
-                        placeholder = "Enter any commets related to this record score"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.comment}
-                        rows={4}
-                        name="comment"
-                        multiline
-                        sx={{ gridColumn: "span 3" }}
-                    />
-              </Box>
+              display="flex"
+              justifyContent="left"
+              mt="20px"
+              sx={{ gridColumn: "span 3" }}
+            >
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Comment"
+                placeholder="Enter any comments related to this record score"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.comment}
+                rows={4}
+                name="comment"
+                multiline
+                sx={{ gridColumn: "span 3" }}
+              />
+            </Box>
             <Box display="flex" justifyContent="left" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
                 Insert Student Grade
@@ -177,20 +224,6 @@ const ScoreForm = () => {
       </Formik>
     </Box>
   );
-};
-
-const phoneRegExp =
-  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
-
-const checkoutSchema = yup.object().shape({
-  score: yup.string().required("Score is Required"),
-});
-const initialVals = {
-    name: null,
-    subject: null,
-    score: "",
-    comment: "",
-    assignmentType: "",
 };
 
 export default ScoreForm;
