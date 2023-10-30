@@ -5,13 +5,13 @@ import { tokens } from '../../theme';
 import { scoreData } from '../../data/endpoints';
 import Header from '../../components/Header';
 import EditIcon from '@mui/icons-material/Edit';
-import { ColorLensTwoTone } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const Scores = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [selected, setSelected] = useState([]);
-
+    const navigate = useNavigate();
     const scoreRows = scoreData();
 
     const columns = [
@@ -62,7 +62,9 @@ const Scores = () => {
             }
         },
         // Only activate the edit icon when a single row is selected
-        { flex: 1, 
+        {   flex: 1, 
+            field: "edit",
+            headerName: "",
             renderCell: (params) => {
             const rowIsSelected = selected.includes(params.row);
             return rowIsSelected && selected.length == 1? (
@@ -73,8 +75,12 @@ const Scores = () => {
     ]
 
     const handleOpenStudentInfo = () => {
-        console.log(selected);
-        setSelected(null);
+        
+        navigate('/student-info', {state:{
+            studentId: selected[0].studentId,
+            studentName: `${selected[0].firstName} ${selected[0].lastName}`,
+            studentGrade: selected[0].grade,
+        }});
     }
 
     return (
