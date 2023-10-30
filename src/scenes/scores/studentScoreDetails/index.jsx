@@ -1,12 +1,15 @@
 import { DataGrid } from '@mui/x-data-grid';
-import { Box, useTheme } from '@mui/material';
+import { Box, IconButton, useTheme } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import { getStudentScoreDataByIdAndGrade } from '../../../data/endpoints';
 import Header from '../../../components/Header';
 import { tokens } from '../../../theme';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { useNavigate } from 'react-router-dom';
 
 const StudentScoreDetails = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const { studentId, studentName, studentGrade } = location.state;
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -18,14 +21,24 @@ const StudentScoreDetails = () => {
         { field: 'grade', headerName: 'GRADE', flex: 1},
         { field: 'score', headerName: 'SCORE', flex: 1 },
         { field: 'dateRecorded', headerName: 'DATE RECORDED', flex: 1 },
+        { field: 'comment', headerName: 'COMMENTS', flex: 2},
     ]
 
     // Get data from database for DataGrid rows
     const rows = getStudentScoreDataByIdAndGrade(studentId, studentGrade);
-    console.log(rows);
 
     return (
         <Box m = '20px'>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <IconButton
+                    onClick={() => {
+                        navigate('/scores');
+                    }}
+                >
+                    <ArrowBackIosIcon />
+                </IconButton>
+            </Box>
+
             <Header title = {`${studentName.toUpperCase()} GRADES`} subtitle = 'List of recorded assignments' />
             <Box 
                 m = '40px 0 0 0'
