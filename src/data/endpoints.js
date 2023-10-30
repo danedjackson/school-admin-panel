@@ -134,6 +134,33 @@ export const scoreData = (grade) => {
   return scoreRows;
 }
 
+export const getStudentScoreDataByIdAndGrade = (studentId, studentGrade) => {
+  const endpoint = `http://localhost:8080/api/score/${studentId}?grade=${studentGrade}`;
+  const [studentScoreData, setStudentScoreData] = useState([]);
+
+  useEffect(() => {
+    fetch(endpoint)
+      .then((response) => {
+        if(!response.ok) {
+          throw new Error(`Network response was not ok when fetching student data. Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        const studentScoreDataWithId = data.response.map((row, index) => ({
+          id: index + 1,
+          ...row,
+        }));
+        setStudentScoreData(studentScoreDataWithId);
+      })
+      .catch((error) => {
+        console.error(`Error fetching student data for ${studentId}: ${error}`);
+      });
+  }, []);
+
+  return studentScoreData;
+}
+
 export const saveStudentScoreData = async (request) => {
   
   const endpoint = `http://localhost:8080/api/score`;

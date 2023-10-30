@@ -29,6 +29,7 @@
     "react-dom": "^18.2.0",
     "react-pro-sidebar": "^0.7.1",
     "react-router-dom": "^6.15.0",
+    "vite-plugin-ssr": "^0.4.142",
     "yep": "^0.1.0",
     "yup": "^1.2.0"
   },
