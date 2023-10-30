@@ -2,9 +2,10 @@ import { Box, Button, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
-// Mock... TODO: Pull info from real dataset
 import { scoreData } from '../../data/endpoints';
 import Header from '../../components/Header';
+import EditIcon from '@mui/icons-material/Edit';
+import { ColorLensTwoTone } from '@mui/icons-material';
 
 const Scores = () => {
     const theme = useTheme();
@@ -60,10 +61,20 @@ const Scores = () => {
             );
             }
         },
+        // Only activate the edit icon when a single row is selected
+        { flex: 1, 
+            renderCell: (params) => {
+            const rowIsSelected = selected.includes(params.row);
+            return rowIsSelected && selected.length == 1? (
+                <EditIcon onClick={handleOpenStudentInfo} />
+            ) : null;
+            },
+        }
     ]
 
-    const handleOpenModal = () => {
+    const handleOpenStudentInfo = () => {
         console.log(selected);
+        setSelected(null);
     }
 
     return (
@@ -110,9 +121,9 @@ const Scores = () => {
                         setSelected(selectedRows);
                     }}
                 />
-                {selected.length > 0 && (
-                    <Button variant="contained" onClick={handleOpenModal}>
-                        Edit
+                {selected.length > 1 && (
+                    <Button variant="contained">
+                        Print All
                     </Button>
                 )}
             </Box>
