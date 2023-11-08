@@ -58,7 +58,7 @@ const ScoreForm = () => {
         saveStudentScoreData(values)
           .then((response) => {
             if(response.httpStatus == "OK") {
-                alert("Successfully stored score");
+                //alert("Successfully stored score");
             }
             else {
                 alert("Failed to save student score data");
@@ -205,7 +205,7 @@ const ScoreForm = () => {
             </Box>
             <Box display="flex" justifyContent="left" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Insert Student Grade
+                Insert Student Score
               </Button>
             </Box>
           </form>

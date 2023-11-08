@@ -1,7 +1,7 @@
 import { tokens } from "../theme";
 import {useState, useEffect} from 'react';
 
-export const useTeacherData = () => {
+export const getTeacherData = () => {
   const [teacherRows, setTeacherRows] = useState([]);
   const endpoint = `http://localhost:8080/api/user/type/0`;
 
@@ -134,31 +134,24 @@ export const scoreData = (grade) => {
   return scoreRows;
 }
 
-export const getStudentScoreDataByIdAndGrade = (studentId, studentGrade) => {
+export const getStudentScoreDataByIdAndGrade = async (studentId, studentGrade) => {
   const endpoint = `http://localhost:8080/api/score/${studentId}?grade=${studentGrade}`;
-  const [studentScoreData, setStudentScoreData] = useState([]);
+  //const [studentScoreData, setStudentScoreData] = useState([]);
 
-  useEffect(() => {
-    fetch(endpoint)
-      .then((response) => {
-        if(!response.ok) {
-          throw new Error(`Network response was not ok when fetching student data. Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        const studentScoreDataWithId = data.response.map((row, index) => ({
-          id: index + 1,
-          ...row,
-        }));
-        setStudentScoreData(studentScoreDataWithId);
-      })
-      .catch((error) => {
-        console.error(`Error fetching student data for ${studentId}: ${error}`);
-      });
-  }, []);
-
-  return studentScoreData;
+  try {
+    const response = await fetch(endpoint);
+    if(!response.ok) {
+      throw new Error(`Network response was not ok when deleting student score data. Status: ${response.status}`);
+    }
+    const data = await response.json();
+    const studentScoreDataWithId = data.response.map((row, index) => ({
+      id: index + 1,
+      ...row,
+    }));
+    return studentScoreDataWithId;
+  } catch (error) {
+    console.error(`Error deleting student score data: ${error}`);
+  }
 }
 
 export const saveStudentScoreData = async (request) => {
@@ -182,7 +175,28 @@ export const saveStudentScoreData = async (request) => {
   } catch (error) {
     console.error(`Error saving student score data: ${error}`);
   }
+}
 
+export const updateStudentScoreData = (request) => {
+
+}
+
+export const deleteStudentScoreData = async (scoreId) => {
+  const endpoint = `http://localhost:8080/api/score/delete/${scoreId}`;
+  console.log(endpoint);
+  try {
+    const response = await fetch(endpoint, {
+      method: `DELETE`,
+    });
+    if(!response.ok) {
+      throw new Error(`Network response was not ok when deleting student score data. Status: ${response.status}`);
+    }
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error(`Error deleting student score data: ${error}`);
+  }
 }
 
 export const mockDataInvoices = [
