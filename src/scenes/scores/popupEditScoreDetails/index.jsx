@@ -1,19 +1,43 @@
-import React from 'react';
 import { Dialog, DialogTitle, DialogContent } from '@mui/material'
 import { Box, Button, TextField, Select, MenuItem, Typography } from "@mui/material";
 import { Formik } from "formik";
+import { updateStudentScoreData } from '../../../data/endpoints';
 import Header from '../../../components/Header';
 
 
 const ScoreDetailsPopup = (props) => {
     const { title, selected, openPopup, setOpenPopup } = props;
+    
     const initialVals = {
         subject: selected[0]?.subject,
         score: selected[0]?.score,
         comment: selected[0]?.comment,
         //assignmentType: selected.assignmentType,
-      };
+    };
 
+    const updateStudentScore = async (selected, values) => {
+        const request = {
+            ...values, 
+            studentId: selected?.studentId,
+            grade: selected[0]?.grade,
+            scoreId: selected[0]?.scoreId,
+            assignmentId: selected[0]?.assignmentId,
+            dateRecorded: selected[0]?.dateRecorded,
+            //TODO: Take this teacherId from cookies
+            teacherId: "653182ff2ddb51f6e2341098"
+        };
+        
+        const updatedRecord = await updateStudentScoreData(request);
+        if (null == updatedRecord) {
+            //TODO: Make a toast message which displays "No changes made"
+            return;
+        }
+        
+        props.onClose(updatedRecord);
+
+        setOpenPopup(false);
+    }
+    
     return (
         <Dialog open = {openPopup}>
             <DialogTitle>
@@ -90,6 +114,7 @@ const ScoreDetailsPopup = (props) => {
                                     color="secondary" 
                                     variant="contained"
                                     sx={{ marginRight: '30px' }} 
+                                    onClick = {() => updateStudentScore(selected, values)}
                                     // onClick={() => console.log(initialVals)}
                                 >
                                     Update Score

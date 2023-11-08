@@ -177,13 +177,36 @@ export const saveStudentScoreData = async (request) => {
   }
 }
 
-export const updateStudentScoreData = (request) => {
+export const updateStudentScoreData = async (request) => {
+  const endpoint = `http://localhost:8080/api/score/update/${request.studentId}`;
 
+  try {
+    const response = await fetch(endpoint, {
+      method: `PATCH`,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(request),
+    });
+    if(!response.ok) {
+      throw new Error(`Network response was not ok when updating student score data. Status: ${response.status}`);
+    }
+    const data = await response.json();
+    if(data.httpStatus == 'OK') {
+      return data.response;
+    } else if(data.httpStatus == 'NOT_MODIFIED') {
+      console.log(`Update Student Score: ${data.message}`);
+      // Will be null
+      return data.response;
+    }
+  } catch(error) {
+    console.error(`Error updating student score data: ${error}`);
+  }
 }
 
 export const deleteStudentScoreData = async (scoreId) => {
   const endpoint = `http://localhost:8080/api/score/delete/${scoreId}`;
-  console.log(endpoint);
+  
   try {
     const response = await fetch(endpoint, {
       method: `DELETE`,

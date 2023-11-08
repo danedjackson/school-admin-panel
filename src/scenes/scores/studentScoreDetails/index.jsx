@@ -38,6 +38,20 @@ const StudentScoreDetails = () => {
         });
         setRows(updatedRows);
     };
+
+    // Function to handle the onClose Popup event
+    const handleScoreDetailsPopupClose = (updatedRecord) => {
+        setRows((prevRows) => {
+            // Find and update the specific row in the rows state
+            return prevRows.map((row) => {
+                if (row.scoreId === updatedRecord.scoreId) {
+                    // Update the specific row with the new data, assigning the same ID for DataGrid
+                    return {id: row.id, ...updatedRecord};
+                }
+                return row;
+            });
+        });
+    };
     
 
     // Build the columns for DataGrid
@@ -56,7 +70,7 @@ const StudentScoreDetails = () => {
         },
         {field: 'delete', headerName: 'DELETE', flex: 1,
         renderCell: () => (
-          <DeleteForeverIcon onClick={() => handleDeleteClick()} />
+          <DeleteForeverIcon sx={{ color: 'red' }} onClick={() => handleDeleteClick()} />
         ),
       }
     ]
@@ -133,8 +147,9 @@ const StudentScoreDetails = () => {
             <ScoreDetailsPopup 
                 openPopup = {openPopup}
                 setOpenPopup = {setOpenPopup}
-                selected = {selected}
+                selected = {{...selected, studentId}}
                 title = {`${studentName}`}
+                onClose = {handleScoreDetailsPopupClose}
             >
             </ScoreDetailsPopup>
 
