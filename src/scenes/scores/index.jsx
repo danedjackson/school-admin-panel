@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
 import { scoreData } from '../../data/endpoints';
+import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import EditIcon from '@mui/icons-material/Edit';
-import { useNavigate } from 'react-router-dom';
 
 const Scores = () => {
     const theme = useTheme();
@@ -15,7 +15,7 @@ const Scores = () => {
     const scoreRows = scoreData();
 
     const columns = [
-        { field: 'id', headerName: 'ID'}, 
+        //{ field: 'id', headerName: 'ID'}, 
         { field: 'firstName', headerName: 'FIRST NAME', flex: 1 },
         { field: 'middleName', headerName: 'MIDDLE NAME', flex: 1 },
         { field: 'lastName', headerName: 'LAST NAME', flex: 1 },
@@ -53,6 +53,16 @@ const Scores = () => {
         },
         { field: 'art', headerName: 'ART', flex: 1, type: 'number',
             valueGetter: (params) => params.row.averages?.art?.average || null, headerAlign: 'left', align: 'left',
+            renderCell: (params) => {
+            return (
+                <Typography color={colors.greenAccent[500]}>
+                    {params.value === null ? "N/A" : params.value}
+                </Typography>
+            );
+            }
+        },
+        { field: 'phonics', headerName: 'PHONICS', flex: 1, type: 'number',
+            valueGetter: (params) => params.row.averages?.phonics?.average || null, headerAlign: 'left', align: 'left',
             renderCell: (params) => {
             return (
                 <Typography color={colors.greenAccent[500]}>

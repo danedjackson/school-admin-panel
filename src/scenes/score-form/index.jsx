@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
+import { saveStudentScoreData } from "../../data/endpoints";
+import { getStudentDropdownData } from '../../data/transforms/student';
+import { getAssignmentDropdownData, getSubjectDropdownData } from '../../data/transforms/subject';
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import Autocomplete from '@mui/material/Autocomplete';
-import { saveStudentScoreData } from "../../data/endpoints";
-import { getStudentDropdownData } from '../../data/transforms/student';
-import { getAssignmentDropdownData, getSubjectDropdownData } from '../../data/transforms/subject';
 
 const getDate = () => {
   const date = new Date();
@@ -58,7 +58,7 @@ const ScoreForm = () => {
         saveStudentScoreData(values)
           .then((response) => {
             if(response.httpStatus == "OK") {
-                alert("Successfully stored score");
+                //alert("Successfully stored score");
             }
             else {
                 alert("Failed to save student score data");
@@ -205,7 +205,7 @@ const ScoreForm = () => {
             </Box>
             <Box display="flex" justifyContent="left" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Insert Student Grade
+                Insert Student Score
               </Button>
             </Box>
           </form>

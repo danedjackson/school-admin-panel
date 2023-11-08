@@ -115,6 +115,19 @@ const Form = () => {
                 helperText={touched.address && errors.address}
                 sx={{ gridColumn: "span 3" }}
               />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Grade"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.grade}
+                name="grade"
+                error={!!touched.grade && !!errors.grade}
+                helperText={touched.grade && errors.grade}
+                sx={{ gridColumn: "span 3" }}
+              />
               <Typography sx={{gridColumn: "span 3"}}>
                 Type of User
               </Typography>
@@ -157,6 +170,7 @@ const checkoutSchema = yup.object().shape({
     .matches(phoneRegExp, "Phone number is not valid")
     .required("Valid phone number is required"),
   address: yup.string().required("User must live somewhere :)"),
+  grade: yup.string().required("Must either teach a grade or belong to a grade"),
 });
 const initialVals = {
   firstName: "",
@@ -164,6 +178,7 @@ const initialVals = {
   email: "",
   contact: "",
   address: "",
+  grade: "",
   type: 1,
 };
 

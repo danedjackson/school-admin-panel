@@ -2,7 +2,7 @@ import { Box, Typography, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
 // Mock... TODO: Pull info from real dataset
-import {  useTeacherData } from '../../data/endpoints';
+import {  getTeacherData } from '../../data/endpoints';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
@@ -11,7 +11,7 @@ import Header from '../../components/Header';
 const Teachers = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const { teacherRows } = useTeacherData();
+    const { teacherRows } = getTeacherData();
 
     const columns = [
         { field: 'id', headerName: 'ID'}, 
