@@ -1,6 +1,5 @@
 import { tokens } from "../theme";
 import {useState, useEffect} from 'react';
-import {useState, useEffect} from 'react';
 
 export const getTeacherData = () => {
   const [teacherRows, setTeacherRows] = useState([]);
