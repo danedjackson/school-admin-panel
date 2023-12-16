@@ -17,13 +17,11 @@ import Login from './scenes/login';
 
 function App() {
   const [theme, colorMode] = useMode();
-  const [authenticated, setAuthenticated] = useState(false);
-  const navigate = useNavigate();
-
+  const [authenticated, setAuthenticated] = useState(sessionStorage.getItem('jwtToken') !== null);
   // Check if the user is authenticated
   if (!authenticated) {
     // If not authenticated, redirect to the login page
-    navigate('/login');
+    return <Login />;
   }
 
   return (
@@ -35,15 +33,15 @@ function App() {
           <main className="content">
             {authenticated && <Topbar />}
             <Routes>
-              <Route path="/" element={authenticated ? <Dashboard /> : <Login />} />
-              <Route path="/teachers" element={authenticated ? <Teachers /> : <Login />} />
-              <Route path="/contacts" element={authenticated ? <Contacts /> : <Login />} />
-              <Route path="/scores" element={authenticated ? <Scores /> : <Login />} />
-              <Route path="/form" element={authenticated ? <Form /> : <Login />} />
-              <Route path="/score-form" element={authenticated ? <ScoreForm /> : <Login />} />
-              <Route path="/student-info" element={authenticated ? <StudentScoreDetails /> : <Login />} />
-              <Route path="/calendar" element={authenticated ? <Calendar /> : <Login />} />
-              <Route path="/faq" element={authenticated ? <FAQ /> : <Login />} />
+              <Route path="/" element={authenticated ? <Dashboard /> : <Navigate to="/login" />} />
+              <Route path="/teachers" element={authenticated ? <Teachers /> : <Navigate to="/login" />} />
+              <Route path="/contacts" element={authenticated ? <Contacts /> : <Navigate to="/login" />} />
+              <Route path="/scores" element={authenticated ? <Scores /> : <Navigate to="/login" />} />
+              <Route path="/form" element={authenticated ? <Form /> : <Navigate to="/login" />} />
+              <Route path="/score-form" element={authenticated ? <ScoreForm /> : <Navigate to="/login" />} />
+              <Route path="/student-info" element={authenticated ? <StudentScoreDetails /> : <Navigate to="/login" />} />
+              <Route path="/calendar" element={authenticated ? <Calendar /> : <Navigate to="/login" />} />
+              <Route path="/faq" element={authenticated ? <FAQ /> : <Navigate to="/login" />} />
               <Route path="/login" element={authenticated ? null : <Login />} />
             </Routes>
           </main>

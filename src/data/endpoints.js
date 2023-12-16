@@ -6,7 +6,11 @@ export const getTeacherData = () => {
   const endpoint = `http://localhost:8080/api/user/type/0`;
 
   useEffect(() => {
-    fetch(endpoint)
+    fetch(endpoint, {
+      headers: {
+        'Authorization': `Bearer ${sessionStorage.getItem('jwtToken')}`,
+      }
+    })
       .then((response) => {
         if(!response.ok) {
           throw new Error(`Network response was not ok when fetching teacher data. Status: ${response.status}`);
@@ -37,7 +41,11 @@ export const getStudentData = () => {
   const endpoint = `http://localhost:8080/api/user/type/1`;
 
   useEffect(() => {
-    fetch(endpoint)
+    fetch(endpoint, {
+      headers: {
+        'Authorization': `Bearer ${sessionStorage.getItem('jwtToken')}`,
+      }
+    })
       .then((response) => {
         if(!response.ok) {
           throw new Error(`Network response was not ok when fetching student data. Status: ${response.status}`);
@@ -66,7 +74,12 @@ export const scoreData = (grade) => {
   const [scoreRows, setScoreRows] = useState([]);
   const endpoint = `http://localhost:8080/api/score/all`;
   useEffect(() => {
-    fetch(endpoint)
+    fetch(endpoint,
+      {
+        headers: {
+          'Authorization': `Bearer ${sessionStorage.getItem('jwtToken')}`,
+        }
+      })
       .then(response => {
         if (!response.ok) {
           throw new Error(`Network response was not ok when fetching score data. Status: ${response.status}`);
@@ -139,7 +152,11 @@ export const getStudentScoreDataByIdAndGrade = async (studentId, studentGrade) =
   //const [studentScoreData, setStudentScoreData] = useState([]);
 
   try {
-    const response = await fetch(endpoint);
+    const response = await fetch(endpoint, {
+      headers: {
+        'Authorization': `Bearer ${sessionStorage.getItem('jwtToken')}`,
+      }
+    });
     if(!response.ok) {
       throw new Error(`Network response was not ok when deleting student score data. Status: ${response.status}`);
     }
@@ -154,6 +171,28 @@ export const getStudentScoreDataByIdAndGrade = async (studentId, studentGrade) =
   }
 }
 
+export const signIn = async(email, password) => {
+  const endpoint = `http://localhost:8080/api/v1/auth/signin`;
+  try{
+    const response = await fetch(endpoint, {
+      method: `POST`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({email: email, password: password}),
+    });
+
+    if(!response.ok) {
+      throw new Error(`Network response was not ok when saving student score data. Status: ${response.status}`);
+    }
+    const data = await response.json();
+    sessionStorage.setItem('jwtToken', data?.response?.token);
+    
+  } catch (error) {
+    console.error(`Error saving student score data: ${error}`);
+  }
+}
+
 export const saveStudentScoreData = async (request) => {
   
   const endpoint = `http://localhost:8080/api/score`;
@@ -163,6 +202,7 @@ export const saveStudentScoreData = async (request) => {
       method: `POST`,
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionStorage.getItem('jwtToken')}`,
       },
       body: JSON.stringify(request),
     });
@@ -184,7 +224,8 @@ export const updateStudentScoreData = async (request) => {
     const response = await fetch(endpoint, {
       method: `PATCH`,
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionStorage.getItem('jwtToken')}`,
       },
       body: JSON.stringify(request),
     });
@@ -210,6 +251,9 @@ export const deleteStudentScoreData = async (scoreId) => {
   try {
     const response = await fetch(endpoint, {
       method: `DELETE`,
+      headers: {
+        'Authorization': `Bearer ${sessionStorage.getItem('jwtToken')}`,
+      }
     });
     if(!response.ok) {
       throw new Error(`Network response was not ok when deleting student score data. Status: ${response.status}`);

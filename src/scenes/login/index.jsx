@@ -2,6 +2,8 @@ import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import Header from "../../components/Header";
+import { signIn } from "../../data/endpoints";
+import { useNavigate } from "react-router-dom";
 
 // Creating schema
 const schema = Yup.object().shape({
@@ -14,9 +16,12 @@ const schema = Yup.object().shape({
 });
 
 const Login = () => {
+    const navigate = useNavigate();
 
-    const handleSubmit = (values) => {
-        console.log(values);
+    const handleSubmit = async (values) => {
+        // Attempts sign in and sets token for session.
+        await signIn(values.email, values.password);
+        navigate('/');
     }
     return (
         <Box
