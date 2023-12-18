@@ -1,6 +1,29 @@
 import { tokens } from "../theme";
 import {useState, useEffect} from 'react';
 
+export const signIn = async(email, password) => {
+  const endpoint = `http://localhost:8080/api/v1/auth/signin`;
+  try{
+    const response = await fetch(endpoint, {
+      method: `POST`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({email: email, password: password}),
+    });
+
+    if(!response.ok) {
+      throw new Error(`Network response was not ok when saving student score data. Status: ${response.status}`);
+    }
+    const data = await response.json();
+    sessionStorage.setItem('token', data?.response?.token);
+    return data?.response?.token;    
+  } catch (error) {
+    console.error(`Error saving student score data: ${error}`);
+  }
+}
+
+
 export const getTeacherData = () => {
   const [teacherRows, setTeacherRows] = useState([]);
   const endpoint = `http://localhost:8080/api/user/type/0`;
