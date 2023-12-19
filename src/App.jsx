@@ -17,8 +17,7 @@ import Layout from './components/Layout';
 import RequireAuth from './auth/RequireAuth';
 
 function App() {
-  const [theme, colorMode] = useMode();
-
+    
   return (
     <Routes>
       <Route path = "/" element = {<Layout />}>

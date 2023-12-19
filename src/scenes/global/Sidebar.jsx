@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ProSidebar, Menu, MenuItem} from 'react-pro-sidebar';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { Box, IconButton, Typography, useTheme } from '@mui/material';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { tokens } from "../../theme";
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
@@ -17,6 +17,9 @@ import TimelineOutlinedIcon from '@mui/icons-material/TimelineOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
+import LogoutOutlined from "@mui/icons-material/LogoutOutlined";
+
+import useAuth from "../../hooks/useAuth";
 
 const Item = ({title, to, icon, selected, setSelected}) => {
     const theme = useTheme();
@@ -36,12 +39,18 @@ const Item = ({title, to, icon, selected, setSelected}) => {
 }
 
 const Sidebar = () => {
+    const { setAuth } = useAuth(); 
+    const navigate = useNavigate();
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [selected, setSelected] = useState('Dashboard');
-    
 
+    const handleLogout = () => {
+        sessionStorage.removeItem("token");
+        setAuth({});
+        navigate("/");
+    }
 
     return (
         <Box 
@@ -203,7 +212,7 @@ const Sidebar = () => {
                             setSelected = {setSelected}
                         />
 
-                        <Typography
+                        {/* <Typography
                             variant = 'h6'
                             color = {colors.grey[300]}
                             sx = {{ m: '15px 0 5px 20px' }}
@@ -238,7 +247,23 @@ const Sidebar = () => {
                             icon = {<MapOutlinedIcon />}
                             selected = {selected}
                             setSelected = {setSelected}
-                        />
+                        /> */}
+                        <Typography
+                            variant = 'h6'
+                            color = {colors.redAccent[300]}
+                            sx = {{ m: '15px 0 5px 20px' }}
+                        >
+                            Actions
+                        </Typography>
+
+                        {/* LOGOUT */}
+                        <MenuItem 
+                            style = {{ color: colors.grey[100] }} 
+                            onClick = {handleLogout}
+                            icon = {<LogoutOutlined />}
+                        >
+                            <Typography>Logout</Typography>
+                        </MenuItem>
                     </Box>
                 </Menu>
             </ProSidebar>

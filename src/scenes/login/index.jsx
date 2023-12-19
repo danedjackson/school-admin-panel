@@ -5,96 +5,92 @@ import Header from "../../components/Header";
 import { signIn } from "../../data/endpoints";
 import * as Yup from "yup";
 import useAuth from "../../hooks/useAuth";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const Login = () => {
     const { auth, setAuth } = useAuth();
-    const [success, setSuccess] = useState(sessionStorage.getItem("token"));
+
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || "/";
 
     const handleSubmit = async (values) => {
         const token = await signIn(values.email, values.password);
         if(token != null) {
-            setAuth({email: values.email, token})
-            setSuccess(true);
+            setAuth({email: values.email, token});
+            navigate(from, { replace: true});
         }
     }
     return (
-        <>
-            {
-                success ? (
-                    <h1>You are logged in {auth?.email}</h1>
-                ) :
-                (
-                <Box
-                    sx={{
-                        
-                        "position": "relative",
-                        "z-index": 1,
-                        "borderRadius": "10px",
-                        "maxWidth": "360px",
-                        "margin": "0 auto 100px",
-                        "padding": "45px",
-                    }}
+            <Box
+                sx={{
+                    
+                    "position": "relative",
+                    "z-index": 1,
+                    "borderRadius": "10px",
+                    "maxWidth": "360px",
+                    "margin": "0 auto 100px",
+                    "padding": "45px",
+                }}
+            >
+                <Header title="LOGIN" subtitle="Login to EduCen" />
+                <Formik
+                    validationSchema={schema}
+                    initialValues={{ email: "", password: "" }}
+                    onSubmit={handleSubmit}
                 >
-                    <Header title="LOGIN" subtitle="Login to EduCen" />
-                    <Formik
-                        validationSchema={schema}
-                        initialValues={{ email: "", password: "" }}
-                        onSubmit={handleSubmit}
-                    >
-                        {({
-                        values,
-                        errors,
-                        touched,
-                        handleChange,
-                        handleBlur,
-                        handleSubmit,
-                        }) => (
-                        <div className="login">
-                            <div className="form">
-                                
-                        {/* Passing handleSubmit parameter tohtml form onSubmit property */}
-                            <form onSubmit={handleSubmit}>
+                    {({
+                    values,
+                    errors,
+                    touched,
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    }) => (
+                    <div className="login">
+                        <div className="form">
+                            
+                    {/* Passing handleSubmit parameter tohtml form onSubmit property */}
+                        <form onSubmit={handleSubmit}>
+                        {/* Our input html with passing formik parameters like handleChange, values, handleBlur to input properties */}
+                            <TextField
+                                type="email"
+                                name="email"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.email}
+                                placeholder="Enter email id / username"
+                                className="form-control inp_text"
+                                id="email"
+                                error={!!touched.email && !!errors.email}
+                                helperText={touched.email && errors.email}
+                                sx={{ margin: '20px 0' }}
+                            />
                             {/* Our input html with passing formik parameters like handleChange, values, handleBlur to input properties */}
-                                <TextField
-                                    type="email"
-                                    name="email"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.email}
-                                    placeholder="Enter email id / username"
-                                    className="form-control inp_text"
-                                    id="email"
-                                    error={!!touched.email && !!errors.email}
-                                    helperText={touched.email && errors.email}
-                                    sx={{ margin: '20px 0' }}
-                                />
-                                {/* Our input html with passing formik parameters like handleChange, values, handleBlur to input properties */}
-                                <TextField
-                                    type="password"
-                                    name="password"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.password}
-                                    placeholder="Enter password"
-                                    className="form-control"
-                                    error={!!touched.password && !!errors.password}
-                                    helperText={touched.password && errors.password}
-                                />
-                                {/* Click on submit button to submit the form */}
-                                <Box display="flex" mt="20px">
-                                    <Button type="submit" color="secondary" variant="contained">
-                                        Login
-                                    </Button>
-                                </Box>
-                            </form>
-                            </div>
+                            <TextField
+                                type="password"
+                                name="password"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.password}
+                                placeholder="Enter password"
+                                className="form-control"
+                                error={!!touched.password && !!errors.password}
+                                helperText={touched.password && errors.password}
+                            />
+                            {/* Click on submit button to submit the form */}
+                            <Box display="flex" mt="20px">
+                                <Button type="submit" color="secondary" variant="contained">
+                                    Login
+                                </Button>
+                            </Box>
+                        </form>
                         </div>
-                        )}
-                    </Formik>
-                </Box>
-            )}
-        </>
-    )
+                    </div>
+                    )}
+                </Formik>
+            </Box>
+        )
 }
 
 // Creating schema

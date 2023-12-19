@@ -1,8 +1,12 @@
 import { tokens } from "../theme";
 import {useState, useEffect} from 'react';
 
+// TODO: Export to config file
+const HOST = 'http://localhost:8080/api';
+
+
 export const signIn = async(email, password) => {
-  const endpoint = `http://localhost:8080/api/v1/auth/signin`;
+  const endpoint = `${HOST}/v1/auth/signin`;
   try{
     const response = await fetch(endpoint, {
       method: `POST`,
@@ -26,10 +30,16 @@ export const signIn = async(email, password) => {
 
 export const getTeacherData = () => {
   const [teacherRows, setTeacherRows] = useState([]);
-  const endpoint = `http://localhost:8080/api/user/type/0`;
+  const endpoint = `${HOST}/user/type/0`;
 
   useEffect(() => {
-    fetch(endpoint)
+    fetch(endpoint,
+      {
+        method: `GET`,
+        headers: {
+          'Authorization': `Bearer ${getTokenFromSession()}`
+        }
+      })
       .then((response) => {
         if(!response.ok) {
           throw new Error(`Network response was not ok when fetching teacher data. Status: ${response.status}`);
@@ -57,10 +67,15 @@ export const getTeacherData = () => {
 
 export const getStudentData = () => {
   const [studentRows, setStudentRows] = useState([]);
-  const endpoint = `http://localhost:8080/api/user/type/1`;
+  const endpoint = `${HOST}/user/type/1`;
 
   useEffect(() => {
-    fetch(endpoint)
+    fetch(endpoint,
+      {
+        headers: {
+          'Authorization': `Bearer ${getTokenFromSession()}`
+        }
+      })
       .then((response) => {
         if(!response.ok) {
           throw new Error(`Network response was not ok when fetching student data. Status: ${response.status}`);
@@ -87,9 +102,14 @@ export const getStudentData = () => {
 //TODO: Refactor this to only fetch information. Have transformation bit done elsewhere
 export const scoreData = (grade) => {
   const [scoreRows, setScoreRows] = useState([]);
-  const endpoint = `http://localhost:8080/api/score/all`;
+  const endpoint = `${HOST}/score/all`;
   useEffect(() => {
-    fetch(endpoint)
+    fetch(endpoint,
+      {
+        headers: {
+          'Authorization': `Bearer ${getTokenFromSession()}`
+        }
+      })
       .then(response => {
         if (!response.ok) {
           throw new Error(`Network response was not ok when fetching score data. Status: ${response.status}`);
@@ -158,11 +178,15 @@ export const scoreData = (grade) => {
 }
 
 export const getStudentScoreDataByIdAndGrade = async (studentId, studentGrade) => {
-  const endpoint = `http://localhost:8080/api/score/${studentId}?grade=${studentGrade}`;
-  //const [studentScoreData, setStudentScoreData] = useState([]);
+  const endpoint = `${HOST}/score/${studentId}?grade=${studentGrade}`;
 
   try {
-    const response = await fetch(endpoint);
+    const response = await fetch(endpoint, 
+      {
+        headers: {
+          'Authorization': `Bearer ${getTokenFromSession()}`
+        }
+      });
     if(!response.ok) {
       throw new Error(`Network response was not ok when deleting student score data. Status: ${response.status}`);
     }
@@ -201,13 +225,14 @@ export const saveStudentScoreData = async (request) => {
 }
 
 export const updateStudentScoreData = async (request) => {
-  const endpoint = `http://localhost:8080/api/score/update/${request.studentId}`;
+  const endpoint = `${HOST}/score/update/${request.studentId}`;
 
   try {
     const response = await fetch(endpoint, {
       method: `PATCH`,
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getTokenFromSession()}`
       },
       body: JSON.stringify(request),
     });
@@ -228,11 +253,14 @@ export const updateStudentScoreData = async (request) => {
 }
 
 export const deleteStudentScoreData = async (scoreId) => {
-  const endpoint = `http://localhost:8080/api/score/delete/${scoreId}`;
+  const endpoint = `${HOST}/score/delete/${scoreId}`;
   
   try {
     const response = await fetch(endpoint, {
       method: `DELETE`,
+      headers: {
+        'Authorization': `Bearer ${getTokenFromSession()}`
+      }
     });
     if(!response.ok) {
       throw new Error(`Network response was not ok when deleting student score data. Status: ${response.status}`);
@@ -243,6 +271,10 @@ export const deleteStudentScoreData = async (scoreId) => {
   } catch (error) {
     console.error(`Error deleting student score data: ${error}`);
   }
+}
+
+const getTokenFromSession = () => {
+  return sessionStorage.getItem("token");
 }
 
 export const mockDataInvoices = [
