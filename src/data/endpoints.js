@@ -21,7 +21,13 @@ export const signIn = async(email, password) => {
     }
     const data = await response.json();
     sessionStorage.setItem('token', data?.response?.token);
-    return data?.response?.token;    
+
+    return {
+      id: data?.response?.id,
+      name: data?.response?.firstName,
+      token: data?.response?.token,
+      role: data?.response?.role
+    }    
   } catch (error) {
     console.error(`Error saving student score data: ${error}`);
   }
@@ -69,30 +75,28 @@ export const getStudentData = () => {
   const [studentRows, setStudentRows] = useState([]);
   const endpoint = `${HOST}/user/type/1`;
 
-  useEffect(() => {
-    fetch(endpoint,
-      {
-        headers: {
-          'Authorization': `Bearer ${getTokenFromSession()}`
-        }
-      })
-      .then((response) => {
-        if(!response.ok) {
-          throw new Error(`Network response was not ok when fetching student data. Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        const studentRowsWithId = data.response.map((row, index) => ({
-          id: index + 1,
-          ...row,
-        }));
-        setStudentRows(studentRowsWithId);
-      })
-      .catch((error) => {
-        console.error(`Error fetching student data:`, error)
-      });
-  }, []);
+  fetch(endpoint,
+    {
+      headers: {
+        'Authorization': `Bearer ${getTokenFromSession()}`
+      }
+    })
+    .then((response) => {
+      if(!response.ok) {
+        throw new Error(`Network response was not ok when fetching student data. Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      const studentRowsWithId = data.response.map((row, index) => ({
+        id: index + 1,
+        ...row,
+      }));
+      setStudentRows(studentRowsWithId);
+    })
+    .catch((error) => {
+      console.error(`Error fetching student data:`, error)
+    });
 
   return {
     studentRows
@@ -270,6 +274,28 @@ export const deleteStudentScoreData = async (scoreId) => {
     return data;
   } catch (error) {
     console.error(`Error deleting student score data: ${error}`);
+  }
+}
+
+export const uploadFile = async (file) => {
+  const endpoint = `${HOST}/teacher/upload`;
+
+  try {
+    const response = await fetch(endpoint, {
+      method: `POST`,
+      headers: {
+        'Authorization': `Bearer ${getTokenFromSession()}`
+      },
+      body: file
+    });
+    if(!response.ok) {
+      throw new Error(`Network response was not ok when uploading file data. Status: ${response.status}`);
+    }
+    const data = await response.json();
+
+    return data;
+  } catch(error) {
+    console.error(`Error uploading file: ${error}`);
   }
 }
 

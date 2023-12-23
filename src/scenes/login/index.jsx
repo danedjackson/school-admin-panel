@@ -1,23 +1,22 @@
 import { Box, Button, TextField } from "@mui/material";
-import { useState } from "react";
 import { Formik } from "formik";
 import Header from "../../components/Header";
 import { signIn } from "../../data/endpoints";
 import * as Yup from "yup";
 import useAuth from "../../hooks/useAuth";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Login = () => {
-    const { auth, setAuth } = useAuth();
+    const { setAuth } = useAuth();
 
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || "/";
 
     const handleSubmit = async (values) => {
-        const token = await signIn(values.email, values.password);
+        const {id, name, role, token} = await signIn(values.email, values.password);
         if(token != null) {
-            setAuth({email: values.email, token});
+            setAuth({email: values.email, name, id, role, token});
             navigate(from, { replace: true});
         }
     }

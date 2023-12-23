@@ -18,12 +18,22 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import LogoutOutlined from "@mui/icons-material/LogoutOutlined";
+import GradingOutlinedIcon from '@mui/icons-material/GradingOutlined';
 
 import useAuth from "../../hooks/useAuth";
 
-const Item = ({title, to, icon, selected, setSelected}) => {
+const Item = ({ title, to, icon, selected, setSelected, allowedRoles }) => {
+    const { auth } = useAuth();
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    
+    // Check if the user's role is allowed to see this item
+    const isRoleAllowed = allowedRoles ? allowedRoles.includes(auth?.role?.toLowerCase()) : true;
+
+    // Return null if the user's role is not allowed
+    if (!isRoleAllowed) {
+        return null;
+    }
     
     return (
         <MenuItem 
@@ -39,7 +49,7 @@ const Item = ({title, to, icon, selected, setSelected}) => {
 }
 
 const Sidebar = () => {
-    const { setAuth } = useAuth(); 
+    const { auth, setAuth } = useAuth(); 
     const navigate = useNavigate();
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -124,13 +134,13 @@ const Sidebar = () => {
                                     fontWeight = 'bold'
                                     sx = { {m: '10px 0 0 0'} }
                                 >
-                                    Dane Jackson
+                                    {auth.name}
                                 </Typography>
                                 <Typography 
                                     variant = 'h5'
                                     color = {colors.greenAccent[500]}
                                 >
-                                    Snr. Developer Admin
+                                    {auth.role}
                                 </Typography>
                             </Box>
                         </Box>
@@ -159,6 +169,7 @@ const Sidebar = () => {
                             icon = {<PeopleOutlinedIcon />}
                             selected = {selected}
                             setSelected = {setSelected}
+                            allowedRoles={['admin']}
                         />
                         <Item 
                             title = 'Contact Information'
@@ -166,6 +177,7 @@ const Sidebar = () => {
                             icon = {<ContactsOutlinedIcon />}
                             selected = {selected}
                             setSelected = {setSelected}
+                            allowedRoles={['admin', 'teacher']}
                         />
                         <Item 
                             title = 'Student Scores'
@@ -173,6 +185,7 @@ const Sidebar = () => {
                             icon = {<ReceiptOutlinedIcon />}
                             selected = {selected}
                             setSelected = {setSelected}
+                            allowedRoles={['teacher']}
                         />
 
                         <Typography
@@ -189,6 +202,7 @@ const Sidebar = () => {
                             icon = {<PersonOutlinedIcon />}
                             selected = {selected}
                             setSelected = {setSelected}
+                            allowedRoles={['teacher']}
                         />
                         <Item 
                             title = 'Add Student Scores'
@@ -196,6 +210,15 @@ const Sidebar = () => {
                             icon = {<AssessmentOutlinedIcon />}
                             selected = {selected}
                             setSelected = {setSelected}
+                            allowedRoles={['teacher']}
+                        />
+                        <Item 
+                            title = 'Upload Lesson Plans'
+                            to = '/upload-plans'
+                            icon = {<GradingOutlinedIcon />}
+                            selected = {selected}
+                            setSelected = {setSelected}
+                            allowedRoles={['admin', 'teacher']}
                         />
                         <Item 
                             title = 'Calendar'
@@ -203,6 +226,7 @@ const Sidebar = () => {
                             icon = {<CalendarTodayOutlinedIcon />}
                             selected = {selected}
                             setSelected = {setSelected}
+                            allowedRoles={['user']}
                         />
                         <Item 
                             title = 'FAQ'

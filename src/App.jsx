@@ -15,6 +15,7 @@ import Login from './scenes/login';
 import StudentScoreDetails from './scenes/scores/studentScoreDetails';
 import Layout from './components/Layout';
 import RequireAuth from './auth/RequireAuth';
+import UploadPlans from './scenes/upload-plans';
 
 function App() {
     
@@ -31,6 +32,7 @@ function App() {
           <Route path = "/form" element = {<Form />} />
           <Route path = "/score-form" element = {<ScoreForm />} />
           <Route path = "/student-info" element = {<StudentScoreDetails />} />
+          <Route path = "/upload-plans" element = {<UploadPlans />} />
           <Route path = "/calendar" element = {<Calendar />} />
           <Route path = "/faq" element = {<FAQ />} />
         </Route>
@@ -39,34 +41,6 @@ function App() {
         </Route>
     </Routes>
   )
-
-  // return (
-  //   // Global access to our color context
-  //   <ColorModeContext.Provider value = {colorMode}>
-  //     {/* Granting Material UI access */}
-  //     <ThemeProvider theme = {theme}>
-  //       {/* Resets css to defaults*/}
-  //       <CssBaseline />
-  //       <div className = "app">
-  //         <Sidebar />
-  //         <main className = "content">
-  //           <Topbar />
-  //           <Routes>
-  //             <Route path = "/" element = {<Dashboard />} />
-  //             <Route path = "/teachers" element = {<Teachers />} />
-  //             <Route path = "/contacts" element = {<Contacts />} />
-  //             <Route path = "/scores" element = {<Scores />} />
-  //             <Route path = "/form" element = {<Form />} />
-  //             <Route path = "/score-form" element = {<ScoreForm />} />
-  //             <Route path = "/student-info" element = {<StudentScoreDetails />} />
-  //             <Route path = "/calendar" element = {<Calendar />} />
-  //             <Route path = "/faq" element = {<FAQ />} />
-  //           </Routes>
-  //         </main>
-  //       </div>
-  //     </ThemeProvider>
-  //   </ColorModeContext.Provider>
-  // )
 }
 
 export default App
