@@ -8,6 +8,7 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import Autocomplete from '@mui/material/Autocomplete';
+import useAuth from '../../hooks/useAuth';
 
 const getDate = () => {
   const date = new Date();
@@ -21,11 +22,12 @@ const ScoreForm = () => {
   const [selectedName, setSelectedName] = useState(null);
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [selectedAssignmentType, setAssignmentType] = useState(null);
+  const { auth } = useAuth();
 
   const isNotMobileDevice = useMediaQuery("(min-width:600px)");
 
   // TODO: Implement some caching of teacher ID
-  const teacherId = "653182ff2ddb51f6e2341098";
+  //const teacherId = "653182ff2ddb51f6e2341098";
 
   const studentNames = getStudentDropdownData();
 
@@ -42,7 +44,7 @@ const ScoreForm = () => {
     values.name = selectedName;
     values.subject = selectedSubject?.toLowerCase();
     values.assignmentType = selectedAssignmentType;
-    values.teacherId = teacherId;
+    values.teacherId = auth?.id;
 
     const studentNameRecord = studentNames.find(student => student.label === selectedName);
     const assignmentRecord = assignmentType.find(assignment => assignment.label === selectedAssignmentType);
