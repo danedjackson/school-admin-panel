@@ -243,6 +243,27 @@ export const uploadFile = async (file) => {
   }
 }
 
+export const getAllLessonPlans = async () => {
+  const endpoint = `${HOST}/v1/admin/plans`;
+
+  try {
+    const response = await fetch(endpoint, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${getTokenFromSession}`
+      },
+    });
+    if(!response.ok) {
+      throw new Error(`Network response was not ok when fetching lesson plans. Status: ${response.status}`);
+    }
+    const data = await response.json();
+
+    return data;
+  } catch(error) {
+    console.error(`Error fetching lesson plans: ${error}`)
+  }
+}
+
 const getTokenFromSession = () => {
   return sessionStorage.getItem("token");
 }
