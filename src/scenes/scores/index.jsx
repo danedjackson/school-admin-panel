@@ -6,13 +6,15 @@ import { scoreData } from '../../data/endpoints';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import EditIcon from '@mui/icons-material/Edit';
+import useAuth from '../../hooks/useAuth';
 
 const Scores = () => {
     const theme = useTheme();
+    const { auth } = useAuth();
     const colors = tokens(theme.palette.mode);
     const [selected, setSelected] = useState([]);
     const navigate = useNavigate();
-    const scoreRows = scoreData();
+    const scoreRows = scoreData(auth?.grade);
 
     const columns = [
         //{ field: 'id', headerName: 'ID'}, 

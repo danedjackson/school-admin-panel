@@ -14,9 +14,9 @@ const Login = () => {
     const from = location.state?.from?.pathname || "/";
 
     const handleSubmit = async (values) => {
-        const {id, name, role, token} = await signIn(values.email, values.password);
+        const {id, name, grade, role, token} = await signIn(values.email, values.password);
         if(token != null) {
-            setAuth({email: values.email, name, id, role, token});
+            setAuth({email: values.email, name, grade, id, role, token});
             navigate(from, { replace: true});
         }
     }

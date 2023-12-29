@@ -1,8 +1,8 @@
 import { Box, Button, Input, Typography } from "@mui/material";
-import Header from "../../components/Header";
-import useAuth from "../../hooks/useAuth";
+import Header from "../../../components/Header";
+import useAuth from "../../../hooks/useAuth";
 import { useState } from "react";
-import { uploadFile } from "../../data/endpoints";
+import { uploadFile } from "../../../data/endpoints";
 
 const UploadPlans = () => {
     const [selectedFile, setSelectedFile] = useState(null);

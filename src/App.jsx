@@ -1,8 +1,4 @@
-import { ColorModeContext, useMode } from './theme';
-import { CssBaseline, ThemeProvider } from '@mui/material';
 import { Routes, Route } from 'react-router-dom';
-import Topbar from './scenes/global/Topbar';
-import Sidebar from './scenes/global/Sidebar';
 import Dashboard from './scenes/dashboard';
 import Contacts from './scenes/contacts';
 import Teachers from './scenes/teachers';
@@ -15,7 +11,7 @@ import Login from './scenes/login';
 import StudentScoreDetails from './scenes/scores/studentScoreDetails';
 import Layout from './components/Layout';
 import RequireAuth from './auth/RequireAuth';
-import UploadPlans from './scenes/upload-plans';
+import UploadPlans from './scenes/lesson-plans/upload-plans';
 
 function App() {
     

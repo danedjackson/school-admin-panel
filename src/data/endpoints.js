@@ -1,5 +1,5 @@
 import { tokens } from "../theme";
-import {useState, useEffect} from 'react';
+import { getStudentAverages } from "./transforms/score";
 
 // TODO: Export to config file
 const HOST = 'http://localhost:8080/api';
@@ -25,6 +25,7 @@ export const signIn = async(email, password) => {
     return {
       id: data?.response?.id,
       name: data?.response?.firstName,
+      grade: data?.response?.grade,
       token: data?.response?.token,
       role: data?.response?.role
     }    
@@ -35,45 +36,39 @@ export const signIn = async(email, password) => {
 
 
 export const getTeacherData = () => {
-  const [teacherRows, setTeacherRows] = useState([]);
-  const endpoint = `${HOST}/user/type/0`;
+  const endpoint = `${HOST}/v1/admin/teachers`;
+  let teacherRows;
 
-  useEffect(() => {
-    fetch(endpoint,
-      {
-        method: `GET`,
-        headers: {
-          'Authorization': `Bearer ${getTokenFromSession()}`
-        }
-      })
-      .then((response) => {
-        if(!response.ok) {
-          throw new Error(`Network response was not ok when fetching teacher data. Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        //Transforms data to add "id" field, which is required for DataGrid display
-        const rowsWithIds = data.response.map((row, index) => ({
-          id: index + 1,
-          ...row,
-        }));
-
-        setTeacherRows(rowsWithIds);
-      })
-      .catch((error) => {
-        console.error(`Error fetching teacher data:`, error)
-      });
-  }, []);
+  fetch(endpoint, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${getTokenFromSession()}`
+    }
+  })
+  .then((response) => {
+    if(!response.ok) {
+      throw new Error(`Network response was not ok when fetching teacher data. Status: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then((data) => {
+    teacherRows = data.response.map((row, index) => ({
+      id: index+1,
+      ...row,
+    }));
+  })
+  .catch((error) => {
+    console.error(`Error fetching teacher data: ${error}`);
+  });
 
   return {
     teacherRows,
-  };
+  }
 }
 
 export const getStudentData = () => {
-  const [studentRows, setStudentRows] = useState([]);
-  const endpoint = `${HOST}/user/type/1`;
+  const endpoint = `${HOST}/v1/teacher/all-students`;
+  let studentRows;
 
   fetch(endpoint,
     {
@@ -88,11 +83,10 @@ export const getStudentData = () => {
       return response.json();
     })
     .then((data) => {
-      const studentRowsWithId = data.response.map((row, index) => ({
+      studentRows = data.response.map((row, index) => ({
         id: index + 1,
         ...row,
       }));
-      setStudentRows(studentRowsWithId);
     })
     .catch((error) => {
       console.error(`Error fetching student data:`, error)
@@ -103,86 +97,35 @@ export const getStudentData = () => {
   };
 }
 
-//TODO: Refactor this to only fetch information. Have transformation bit done elsewhere
 export const scoreData = (grade) => {
-  const [scoreRows, setScoreRows] = useState([]);
-  const endpoint = `${HOST}/score/all`;
-  useEffect(() => {
-    fetch(endpoint,
-      {
-        headers: {
-          'Authorization': `Bearer ${getTokenFromSession()}`
-        }
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Network response was not ok when fetching score data. Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        const studentAverages = [];
-        let index = 0;
-        data.response.forEach(item => {
-          const {
-            studentId,
-            grade,
-            firstName,
-            middleName,
-            lastName,
-            subject,
-            score,
-          } = item;
+  const endpoint = `${HOST}/v1/score/grade/${grade}`;
+  let scoreRows;
 
-          // Check if the student already exists in the array
-          const studentIndex = studentAverages.findIndex(student => student.studentId === studentId);
-
-          if (studentIndex === -1) {
-            // If the student doesn't exist, add a new entry
-            studentAverages.push({
-              id: index + 1,
-              studentId,
-              grade,
-              firstName,
-              middleName,
-              lastName,
-              averages: {
-                [subject]: {
-                  scores: [parseInt(score)],
-                  average: parseInt(score),
-                },
-              },
-            });
-            
-            index+=1;
-          } else {
-            // If the student already exists, update their subject averages
-            const subjectData = studentAverages[studentIndex].averages[subject];
-            if (!subjectData) {
-              studentAverages[studentIndex].averages[subject] = {
-                scores: [parseInt(score)],
-                average: parseInt(score),
-              };
-            } else {
-              subjectData.scores.push(parseInt(score));
-              const sum = subjectData.scores.reduce((acc, score) => acc + score, 0);
-              subjectData.average = sum / subjectData.scores.length;
-            }
-          }
-        });
-        
-        setScoreRows(studentAverages);
-      })
-      .catch(error => {
-        console.error(`Error fetching scores data:`, error);
-      });
-  }, []);
+  fetch(endpoint,
+    {
+      headers: {
+        'Authorization': `Bearer ${getTokenFromSession()}`
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Network response was not ok when fetching score data. Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Transforming the response to usable data
+      scoreRows = getStudentAverages(data);
+    })
+    .catch(error => {
+      console.error(`Error fetching scores data:`, error);
+    });
 
   return scoreRows;
 }
 
 export const getStudentScoreDataByIdAndGrade = async (studentId, studentGrade) => {
-  const endpoint = `${HOST}/score/${studentId}?grade=${studentGrade}`;
+  const endpoint = `${HOST}/v1/score/${studentId}?grade=${studentGrade}`;
 
   try {
     const response = await fetch(endpoint, 
@@ -207,13 +150,14 @@ export const getStudentScoreDataByIdAndGrade = async (studentId, studentGrade) =
 
 export const saveStudentScoreData = async (request) => {
   
-  const endpoint = `http://localhost:8080/api/score`;
+  const endpoint = `${HOST}/v1/score`;
   
   try {
     const response = await fetch(endpoint, {
       method: `POST`,
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getTokenFromSession()}`
       },
       body: JSON.stringify(request),
     });
@@ -229,7 +173,7 @@ export const saveStudentScoreData = async (request) => {
 }
 
 export const updateStudentScoreData = async (request) => {
-  const endpoint = `${HOST}/score/update/${request.studentId}`;
+  const endpoint = `${HOST}/v1/score/update/${request.studentId}`;
 
   try {
     const response = await fetch(endpoint, {
@@ -257,7 +201,7 @@ export const updateStudentScoreData = async (request) => {
 }
 
 export const deleteStudentScoreData = async (scoreId) => {
-  const endpoint = `${HOST}/score/delete/${scoreId}`;
+  const endpoint = `${HOST}/v1/score/delete/${scoreId}`;
   
   try {
     const response = await fetch(endpoint, {
@@ -278,7 +222,7 @@ export const deleteStudentScoreData = async (scoreId) => {
 }
 
 export const uploadFile = async (file) => {
-  const endpoint = `${HOST}/teacher/upload`;
+  const endpoint = `${HOST}/v1/teacher/upload`;
 
   try {
     const response = await fetch(endpoint, {
@@ -302,124 +246,6 @@ export const uploadFile = async (file) => {
 const getTokenFromSession = () => {
   return sessionStorage.getItem("token");
 }
-
-export const mockDataInvoices = [
-  {
-    id: 1,
-    name: "Jon Snow",
-    email: "jonsnow@gmail.com",
-    cost: "21.24",
-    phone: "(665)121-5454",
-    date: "03/12/2022",
-  },
-  {
-    id: 2,
-    name: "Cersei Lannister",
-    email: "cerseilannister@gmail.com",
-    cost: "1.24",
-    phone: "(421)314-2288",
-    date: "06/15/2021",
-  },
-  {
-    id: 3,
-    name: "Jaime Lannister",
-    email: "jaimelannister@gmail.com",
-    cost: "11.24",
-    phone: "(422)982-6739",
-    date: "05/02/2022",
-  },
-  {
-    id: 4,
-    name: "Anya Forger",
-    email: "anyastark@gmail.com",
-    cost: "80.55",
-    phone: "(921)425-6742",
-    date: "03/21/2022",
-  },
-  {
-    id: 5,
-    name: "Daenerys Targaryen",
-    email: "daenerystargaryen@gmail.com",
-    cost: "1.24",
-    phone: "(421)445-1189",
-    date: "01/12/2021",
-  },
-  {
-    id: 6,
-    name: "Ever Melisandre",
-    email: "evermelisandre@gmail.com",
-    cost: "63.12",
-    phone: "(232)545-6483",
-    date: "11/02/2022",
-  },
-  {
-    id: 7,
-    name: "Ferrara Clifford",
-    email: "ferraraclifford@gmail.com",
-    cost: "52.42",
-    phone: "(543)124-0123",
-    date: "02/11/2022",
-  },
-  {
-    id: 8,
-    name: "Rossini Frances",
-    email: "rossinifrances@gmail.com",
-    cost: "21.24",
-    phone: "(222)444-5555",
-    date: "05/02/2021",
-  },
-];
-
-export const mockTransactions = [
-  {
-    txId: "01e4dsa",
-    user: "johndoe",
-    date: "2021-09-01",
-    cost: "43.95",
-  },
-  {
-    txId: "0315dsaa",
-    user: "jackdower",
-    date: "2022-04-01",
-    cost: "133.45",
-  },
-  {
-    txId: "01e4dsa",
-    user: "aberdohnny",
-    date: "2021-09-01",
-    cost: "43.95",
-  },
-  {
-    txId: "51034szv",
-    user: "goodmanave",
-    date: "2022-11-05",
-    cost: "200.95",
-  },
-  {
-    txId: "0a123sb",
-    user: "stevebower",
-    date: "2022-11-02",
-    cost: "13.55",
-  },
-  {
-    txId: "01e4dsa",
-    user: "aberdohnny",
-    date: "2021-09-01",
-    cost: "43.95",
-  },
-  {
-    txId: "120s51a",
-    user: "wootzifer",
-    date: "2019-04-15",
-    cost: "24.20",
-  },
-  {
-    txId: "0315dsaa",
-    user: "jackdower",
-    date: "2022-04-01",
-    cost: "133.45",
-  },
-];
 
 export const mockBarData = [
   {
