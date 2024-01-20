@@ -66,66 +66,64 @@ export const getTeacherData = () => {
   }
 }
 
-export const getStudentData = () => {
-  const endpoint = `${HOST}/v1/teacher/all-students`;
-  let studentRows;
-
-  fetch(endpoint,
-    {
+export const getStudentData = async () => {
+  try {
+    const endpoint = `${HOST}/v1/teacher/all-students`;
+    const response = await fetch(endpoint, {
       headers: {
         'Authorization': `Bearer ${getTokenFromSession()}`
       }
-    })
-    .then((response) => {
-      if(!response.ok) {
-        throw new Error(`Network response was not ok when fetching student data. Status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then((data) => {
-      studentRows = data.response.map((row, index) => ({
-        id: index + 1,
-        ...row,
-      }));
-    })
-    .catch((error) => {
-      console.error(`Error fetching student data:`, error)
     });
 
-  return {
-    studentRows
-  };
+    if (!response.ok) {
+      throw new Error(`Network response was not ok when fetching student data. Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    const studentRows = data.response.map((row, index) => ({
+      id: index + 1,
+      ...row,
+    }));
+
+    return {
+      studentRows
+    };
+  } catch (error) {
+    console.error(`Error fetching student data:`, error);
+    return {
+      studentRows: []
+    };
+  }
 }
 
-export const scoreData = (grade) => {
+export const scoreData = async (grade) => {
   const endpoint = `${HOST}/v1/score/grade/${grade}`;
-  let scoreRows;
 
-  fetch(endpoint,
-    {
+  try {
+    const response = await fetch(endpoint, {
       headers: {
         'Authorization': `Bearer ${getTokenFromSession()}`
       }
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Network response was not ok when fetching score data. Status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then(data => {
-      // Transforming the response to usable data
-      scoreRows = getStudentAverages(data);
-    })
-    .catch(error => {
-      console.error(`Error fetching scores data:`, error);
     });
 
-  return scoreRows;
+    if (!response.ok) {
+      throw new Error(`Network response was not ok when fetching score data. Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    
+    // Transforming the response to usable data
+    const scoreRows = getStudentAverages(data);
+    return scoreRows;
+  } catch (error) {
+    console.error(`Error fetching scores data:`, error);
+    return null; // or handle the error accordingly
+  }
 }
 
 export const getStudentScoreDataByIdAndGrade = async (studentId, studentGrade) => {
-  const endpoint = `${HOST}/v1/score/${studentId}?grade=${studentGrade}`;
+  const endpoint = `${HOST}/v1/score/student/${studentId}?grade=${studentGrade}`;
 
   try {
     const response = await fetch(endpoint, 
@@ -135,7 +133,7 @@ export const getStudentScoreDataByIdAndGrade = async (studentId, studentGrade) =
         }
       });
     if(!response.ok) {
-      throw new Error(`Network response was not ok when deleting student score data. Status: ${response.status}`);
+      throw new Error(`Network response was not ok when fetching student score data. Status: ${response.status}`);
     }
     const data = await response.json();
     const studentScoreDataWithId = data.response.map((row, index) => ({
@@ -144,7 +142,7 @@ export const getStudentScoreDataByIdAndGrade = async (studentId, studentGrade) =
     }));
     return studentScoreDataWithId;
   } catch (error) {
-    console.error(`Error deleting student score data: ${error}`);
+    console.error(`Error fetching student score data: ${error}`);
   }
 }
 

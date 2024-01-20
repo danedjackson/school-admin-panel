@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
 import { saveStudentScoreData } from "../../data/endpoints";
@@ -22,14 +22,23 @@ const ScoreForm = () => {
   const [selectedName, setSelectedName] = useState(null);
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [selectedAssignmentType, setAssignmentType] = useState(null);
+  const [studentNamesDropdown, setStudentNamesDropdown] = useState([]);
   const { auth } = useAuth();
 
+  useEffect(() => {
+    const fetchStudentNames = async () => {
+      try {
+        const data = await getStudentDropdownData();
+        setStudentNamesDropdown(data);
+      } catch (error) {
+        console.error('Error fetching student names:', error);
+      }
+    };
+
+    fetchStudentNames();
+  }, []);
+
   const isNotMobileDevice = useMediaQuery("(min-width:600px)");
-
-  // TODO: Implement some caching of teacher ID
-  //const teacherId = "653182ff2ddb51f6e2341098";
-
-  const studentNames = getStudentDropdownData();
 
   const assignmentType = getAssignmentDropdownData();
 
@@ -46,7 +55,7 @@ const ScoreForm = () => {
     values.assignmentType = selectedAssignmentType;
     values.teacherId = auth?.id;
 
-    const studentNameRecord = studentNames.find(student => student.label === selectedName);
+    const studentNameRecord = studentNamesDropdown.find(student => student.label === selectedName);
     const assignmentRecord = assignmentType.find(assignment => assignment.label === selectedAssignmentType);
 
     values.studentId = studentNameRecord.id;
@@ -120,7 +129,7 @@ const ScoreForm = () => {
               <Autocomplete
                 disablePortal
                 id="name-dropdown"
-                options={studentNames}
+                options={studentNamesDropdown}
                 value={selectedName}
                 isOptionEqualToValue={(option, value) => option.label.toLowerCase().includes(value.toLowerCase())}
                 onInputChange={(_, newValue) => setSelectedName(newValue)}

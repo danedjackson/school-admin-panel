@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import { Box, useTheme } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
@@ -8,15 +9,28 @@ import Header from '../../components/Header';
 const Contacts = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const { studentRows } = getStudentData();
+    const [studentRows, setStudentRows] = useState([]);
+
+    useEffect(() => {
+        const fetchStudentData = async () => {
+          try {
+            const data = await getStudentData();
+            setStudentRows(data.studentRows);
+          } catch (error) {
+            console.error('Error fetching student data:', error);
+          }
+        };
+    
+        fetchStudentData();
+    }, []);
 
     const columns = [
         //{ field: 'id', headerName: 'ID'}, 
-        { field: 'id', headerName: 'REGISTRAR ID' },
+        //{ field: 'id', headerName: 'REGISTRAR ID' },
         { field: 'firstName', headerName: 'FIRST NAME', flex: 1, cellClassName: 'first-name-column--cell' },
         { field: 'lastName', headerName: 'LAST NAME', flex: 1, cellClassName: 'last-name-column--cell' },
         { field: 'age', headerName: 'AGE', type: 'number', headerAlign: 'left', align: 'left' },
-        { field: 'contactNumber', headerName: 'PHONE NUMBER', flex: 1 },
+        { field: 'contactNumber', headerName: 'CONTACT NUMBER', flex: 1 },
         { field: 'email', headerName: 'EMAIL ADDRESS', flex: 1 },
         { field: 'address', headerName: 'ADDRESS', flex: 1 },
         { field: 'city', headerName: 'CITY' },

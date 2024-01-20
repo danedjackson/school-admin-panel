@@ -1,5 +1,5 @@
 import { Box, Button, Typography, useTheme } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
 import { scoreData } from '../../data/endpoints';
@@ -13,8 +13,21 @@ const Scores = () => {
     const { auth } = useAuth();
     const colors = tokens(theme.palette.mode);
     const [selected, setSelected] = useState([]);
+    const [scoreRows, setScoreRows] = useState([]);
     const navigate = useNavigate();
-    const scoreRows = scoreData(auth?.grade);
+
+    useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const data = await scoreData(auth?.grade);
+            setScoreRows(data);
+          } catch (error) {
+            console.error('Error fetching scores data:', error);
+          }
+        };
+    
+        fetchData();
+      }, [auth?.grade]);
 
     const columns = [
         //{ field: 'id', headerName: 'ID'}, 

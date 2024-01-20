@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { tokens } from "../../theme";
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
+import RecentActorsIcon from '@mui/icons-material/RecentActors';
 import ContactsOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import ReceiptOutlinedIcon from '@mui/icons-material/ReceiptOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
@@ -174,7 +175,7 @@ const Sidebar = () => {
                         <Item 
                             title = 'Contact Information'
                             to = '/contacts'
-                            icon = {<ContactsOutlinedIcon />}
+                            icon = {<RecentActorsIcon />}
                             selected = {selected}
                             setSelected = {setSelected}
                             allowedRoles={['admin', 'teacher']}
