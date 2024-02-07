@@ -20,6 +20,7 @@ import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import LogoutOutlined from "@mui/icons-material/LogoutOutlined";
 import GradingOutlinedIcon from '@mui/icons-material/GradingOutlined';
+import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 
 import useAuth from "../../hooks/useAuth";
 
@@ -212,6 +213,14 @@ const Sidebar = () => {
                             selected = {selected}
                             setSelected = {setSelected}
                             allowedRoles={['teacher']}
+                        />
+                        <Item 
+                            title = 'View Lesson Plans'
+                            to = '/view-plans'
+                            icon = {<ArticleOutlinedIcon />}
+                            selected = {selected}
+                            setSelected = {setSelected}
+                            allowedRoles={['admin']}
                         />
                         <Item 
                             title = 'Upload Lesson Plans'

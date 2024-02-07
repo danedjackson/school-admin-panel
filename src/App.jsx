@@ -12,6 +12,7 @@ import StudentScoreDetails from './scenes/scores/studentScoreDetails';
 import Layout from './components/Layout';
 import RequireAuth from './auth/RequireAuth';
 import UploadPlans from './scenes/lesson-plans/upload-plans';
+import LessonPlans  from './scenes/lesson-plans/view-plans';
 
 function App() {
     
@@ -28,6 +29,7 @@ function App() {
           <Route path = "/form" element = {<Form />} />
           <Route path = "/score-form" element = {<ScoreForm />} />
           <Route path = "/student-info" element = {<StudentScoreDetails />} />
+          <Route path = "/view-plans" element = {<LessonPlans />} />
           <Route path = "/upload-plans" element = {<UploadPlans />} />
           <Route path = "/calendar" element = {<Calendar />} />
           <Route path = "/faq" element = {<FAQ />} />

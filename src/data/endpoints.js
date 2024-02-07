@@ -248,7 +248,7 @@ export const getAllLessonPlans = async () => {
     const response = await fetch(endpoint, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${getTokenFromSession}`
+        'Authorization': `Bearer ${getTokenFromSession()}`
       },
     });
     if(!response.ok) {
