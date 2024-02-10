@@ -241,7 +241,7 @@ export const uploadFile = async (file) => {
   }
 }
 
-export const getAllLessonPlans = async () => {
+export const getAllTeachersWithLessonPlans = async () => {
   const endpoint = `${HOST}/v1/admin/plans`;
 
   try {
