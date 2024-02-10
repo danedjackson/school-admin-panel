@@ -35,35 +35,25 @@ export const signIn = async(email, password) => {
 }
 
 
-export const getTeacherData = () => {
+export const getTeacherData = async () => {
   const endpoint = `${HOST}/v1/admin/teachers`;
   let teacherRows;
 
-  fetch(endpoint, {
-    method: 'GET',
+  const response = await fetch(endpoint, {
     headers: {
       'Authorization': `Bearer ${getTokenFromSession()}`
     }
-  })
-  .then((response) => {
-    if(!response.ok) {
-      throw new Error(`Network response was not ok when fetching teacher data. Status: ${response.status}`);
-    }
-    return response.json();
-  })
-  .then((data) => {
+  });
+
+  if (!response.ok) {
+    throw new Error(`Network response was not ok when fetching student data. Status: ${response.status}`);
+  }
+  const data = await response.json();
     teacherRows = data.response.map((row, index) => ({
       id: index+1,
       ...row,
     }));
-  })
-  .catch((error) => {
-    console.error(`Error fetching teacher data: ${error}`);
-  });
-
-  return {
-    teacherRows,
-  }
+  return teacherRows;
 }
 
 export const getStudentData = async () => {

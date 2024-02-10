@@ -1,4 +1,5 @@
 import { Box, Typography, useTheme } from '@mui/material';
+import { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
 import {  getTeacherData } from '../../data/endpoints';
@@ -9,17 +10,28 @@ import Header from '../../components/Header';
 
 const Teachers = () => {
     const theme = useTheme();
+    const [teacherData, setTeacherData] = useState([]);
     const colors = tokens(theme.palette.mode);
-    const { teacherRows } = getTeacherData();
+
+    useEffect(() => {
+        const fetchTeacherData = async() => {
+          const data = await getTeacherData();
+          console.log(`data: ${JSON.stringify(data, null, 2)}`);
+          setTeacherData(data);
+        };
+
+        fetchTeacherData();
+    }, []);
+
 
     const columns = [
-        { field: 'id', headerName: 'ID'}, 
+        //{ field: 'id', headerName: 'ID'}, 
         {field: 'firstName', headerName: 'FIRST NAME', flex: 1, cellClassName: 'first-name-column--cell'},
         {field: 'lastName', headerName: 'LAST NAME', flex: 1, cellClassName: 'last-name-column--cell'},
         {field: 'age', headerName: 'AGE', type: 'number', headerAlign: 'left', align: 'left'},
         {field: 'contactNumber', headerName: 'PHONE NUMBER', flex: 1},
         {field: 'email', headerName: 'EMAIL ADDRESS', flex: 1},
-        {field: 'access', headerName: 'ACCESS LEVEL', flex: 1, headerAlign: 'center', renderCell: ({row: {access}}) => {
+        {field: 'role', headerName: 'ACCESS LEVEL', flex: 1, headerAlign: 'center', renderCell: ({row: {role}}) => {
             return(
                 <Box 
                     width = '60%'
@@ -28,18 +40,18 @@ const Teachers = () => {
                     display = 'flex'
                     justifyContent = 'center'
                     backgroundColor = {
-                        access === 'admin' ? colors.greenAccent[600] : colors.greenAccent[700]
+                        role.toLowerCase() === 'admin' ? colors.greenAccent[600] : colors.greenAccent[700]
                     }
                     borderRadius = '4px'
                 >
-                    {access === 'admin' && <AdminPanelSettingsOutlinedIcon />}
-                    {access === 'manager' && <SecurityOutlinedIcon />}
-                    {access === 'user' && <LockOpenOutlinedIcon />}
+                    {role.toLowerCase() === 'admin' && <AdminPanelSettingsOutlinedIcon />}
+                    {role.toLowerCase() === 'manager' && <SecurityOutlinedIcon />}
+                    {role.toLowerCase() === 'user' && <LockOpenOutlinedIcon />}
                     <Typography 
                         color = {colors.grey[100]}
                         sx = {{ ml: '5px' }}
                     >
-                        {access}
+                        {role}
                     </Typography>
                 </Box>
             )
@@ -80,7 +92,7 @@ const Teachers = () => {
                 }}
             >
                 <DataGrid
-                    rows = {teacherRows}
+                    rows = {teacherData}
                     columns = {columns}
                 />
             </Box>
