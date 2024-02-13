@@ -3,10 +3,12 @@ import { Box, Button, TextField, Select, MenuItem, Typography } from "@mui/mater
 import { Formik } from "formik";
 import { updateStudentScoreData } from '../../../data/endpoints';
 import Header from '../../../components/Header';
+import useAuth from '../../../hooks/useAuth';
 
 
 const ScoreDetailsPopup = (props) => {
     const { title, selected, openPopup, setOpenPopup } = props;
+    const { auth } = useAuth();
     
     const initialVals = {
         subject: selected[0]?.subject,
@@ -24,7 +26,8 @@ const ScoreDetailsPopup = (props) => {
             assignmentId: selected[0]?.assignmentId,
             dateRecorded: selected[0]?.dateRecorded,
             //TODO: Take this teacherId from cookies
-            teacherId: "653182ff2ddb51f6e2341098"
+            // teacherId: "653182ff2ddb51f6e2341098"
+            teacherId: auth?.id
         };
         
         const updatedRecord = await updateStudentScoreData(request);
