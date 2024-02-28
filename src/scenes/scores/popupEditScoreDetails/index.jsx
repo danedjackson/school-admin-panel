@@ -25,8 +25,6 @@ const ScoreDetailsPopup = (props) => {
             scoreId: selected[0]?.scoreId,
             assignmentId: selected[0]?.assignmentId,
             dateRecorded: selected[0]?.dateRecorded,
-            //TODO: Take this teacherId from cookies
-            // teacherId: "653182ff2ddb51f6e2341098"
             teacherId: auth?.id
         };
         
