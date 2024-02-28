@@ -273,6 +273,30 @@ export const getLessonPlanDocument = async(planId) => {
   }
 }
 
+export const updateLessonPlanComments = async (updatedComments) => {
+
+  const endpoint = `${HOST}/v1/admin/update-plans`;
+  
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${getTokenFromSession()}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updatedComments)
+    });
+    if(!response.ok) {
+      throw new Error(`Network response was not ok when fetching lesson plan document. Status: ${response.status}`);
+    }
+    const data = await response.json();
+
+    return data;
+  } catch(error) {
+    console.error(`Error fetching lesson plan document: ${error}`);
+  }
+}
+
 const getTokenFromSession = () => {
   return sessionStorage.getItem("token");
 }
