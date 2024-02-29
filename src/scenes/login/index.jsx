@@ -15,9 +15,11 @@ const Login = () => {
 
     const handleSubmit = async (values) => {
         const {id, name, grade, role, token} = await signIn(values.email, values.password);
-        if(token != null) {
+        if(token !== null && token !== undefined) {
             setAuth({email: values.email, name, grade, id, role, token});
             navigate(from, { replace: true});
+        }else {
+            alert("Invalid credentials");
         }
     }
     return (

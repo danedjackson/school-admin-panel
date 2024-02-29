@@ -275,7 +275,7 @@ export const getLessonPlanDocument = async(planId) => {
 
 export const updateLessonPlanComments = async (updatedComments) => {
 
-  const endpoint = `${HOST}/v1/admin/update-plans`;
+  const endpoint = `${HOST}/v1/teacher/update-plans`;
   
   try {
     const response = await fetch(endpoint, {
