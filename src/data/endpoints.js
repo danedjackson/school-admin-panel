@@ -2,7 +2,7 @@ import { tokens } from "../theme";
 import { getStudentAverages } from "./transforms/score";
 
 // TODO: Export to config file
-const HOST = 'http://localhost:8080/api';
+const HOST = 'http://173.0.157.209/:8080/api';
 
 
 export const signIn = async(email, password) => {
