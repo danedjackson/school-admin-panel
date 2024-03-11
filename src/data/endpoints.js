@@ -11,6 +11,7 @@ export const signIn = async(email, password) => {
     const response = await fetch(endpoint, {
       method: `POST`,
       headers: {
+        'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({email: email, password: password}),
