@@ -1,12 +1,14 @@
 import { tokens } from "../theme";
 import { getStudentAverages } from "./transforms/score";
+import config from '../config/config.json';
 
 // TODO: Export to config file
-const HOST = 'http://localhost:80/api';
+const HOST = config.API_HOST;
 
 
 export const signIn = async(email, password) => {
   const endpoint = `${HOST}/v1/auth/signin`;
+  
   try{
     const response = await fetch(endpoint, {
       method: `POST`,
