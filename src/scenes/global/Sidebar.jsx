@@ -199,12 +199,20 @@ const Sidebar = () => {
                         </Typography>
 
                         <Item 
-                            title = 'Add User'
+                            title = 'Add Student'
                             to = '/form'
                             icon = {<PersonOutlinedIcon />}
                             selected = {selected}
                             setSelected = {setSelected}
                             allowedRoles={['teacher']}
+                        />
+                        <Item 
+                            title = 'Add Teacher'
+                            to = '/'
+                            icon = {<PersonOutlinedIcon />}
+                            selected = {selected}
+                            setSelected = {setSelected}
+                            allowedRoles={['admin']}
                         />
                         <Item 
                             title = 'Add Student Scores'

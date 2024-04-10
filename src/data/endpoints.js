@@ -2,9 +2,7 @@ import { tokens } from "../theme";
 import { getStudentAverages } from "./transforms/score";
 import config from '../config/config.json';
 
-// TODO: Export to config file
 const HOST = config.API_HOST;
-
 
 export const signIn = async(email, password) => {
   const endpoint = `${HOST}/v1/auth/signin`;
@@ -139,8 +137,30 @@ export const getStudentScoreDataByIdAndGrade = async (studentId, studentGrade) =
   }
 }
 
-export const saveStudentScoreData = async (request) => {
+export const createStudentRecord = async (request) => { 
+  const endpoint = `${HOST}/v1/teacher/create-student`;
   
+  try {
+    const response = await fetch(endpoint, {
+      method: `POST`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getTokenFromSession()}`
+      },
+      body: JSON.stringify(request),
+    });
+    if (!response.ok) {
+      throw new Error(`Network response was not ok when creating student record. Status: ${response.status}`);
+    }
+    const data = await response.json();
+    
+    return data;
+  } catch (error) {
+    console.error(`Error creating student record: ${error}`);
+  }
+}
+
+export const saveStudentScoreData = async (request) => { 
   const endpoint = `${HOST}/v1/score`;
   
   try {

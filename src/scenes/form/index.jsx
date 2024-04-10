@@ -3,17 +3,26 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
+import { createStudentRecord } from "../../data/endpoints";
 
 const Form = () => {
   const isNotMobileDevice = useMediaQuery("(min-width:600px)");
-  //TODO: Handle form submission
-  const handleFormSubmit = (values) => {
-    console.log(values);
+  
+  const handleFormSubmit = async (values, {resetForm}) => {
+    let response = await createStudentRecord(values);
+    if (response.httpStatus == 'CREATED') {
+      alert(`Successfully created ${response.response.firstName} ${response.response.lastName}'s student record`);
+      resetForm();
+    }
+    else {
+      alert(`Failed to create ${values.firstName} ${values.lastName}'s student record, Please try again.`);
+      console.error(`Error creating student record: ${response.message}`);
+    }
   };
 
   return (
     <Box m="20px">
-      <Header title="CREATE USER" subtitle="Create a New User Profile" />
+      <Header title="CREATE STUDENT" subtitle="Create a New Student Profile" />
 
       <Formik
         onSubmit={handleFormSubmit}
@@ -96,10 +105,10 @@ const Form = () => {
                 label="Contact Number"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.contact}
-                name="contact"
-                error={!!touched.contact && !!errors.contact}
-                helperText={touched.contact && errors.contact}
+                value={values.contactNumber}
+                name="contactNumber"
+                error={!!touched.contactNumber && !!errors.contactNumber}
+                helperText={touched.contactNumber && errors.contactNumber}
                 sx={{ gridColumn: "span 3" }}
               />
               <TextField
@@ -128,7 +137,8 @@ const Form = () => {
                 helperText={touched.grade && errors.grade}
                 sx={{ gridColumn: "span 3" }}
               />
-              <Typography sx={{gridColumn: "span 3"}}>
+              {/* This component should call an endpoint which only creates student records */}
+              {/*<Typography sx={{gridColumn: "span 3"}}>
                 Type of User
               </Typography>
               <Select
@@ -144,11 +154,11 @@ const Form = () => {
               >
                 <MenuItem value={0}>Teacher</MenuItem>
                 <MenuItem value={1}>Student</MenuItem>
-              </Select>
+              </Select> */}
             </Box>
             <Box display="flex" justifyContent="left" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Create New User
+                Create New Student Record
               </Button>
             </Box>
           </form>
@@ -165,21 +175,20 @@ const checkoutSchema = yup.object().shape({
   firstName: yup.string().required("First Name is Required"),
   lastName: yup.string().required("Last Name is Required"),
   email: yup.string().email("Invalid Email Format").required("Email is Required"),
-  contact: yup
+  contactNumber: yup
     .string()
-    .matches(phoneRegExp, "Phone number is not valid")
-    .required("Valid phone number is required"),
-  address: yup.string().required("User must live somewhere :)"),
-  grade: yup.string().required("Must either teach a grade or belong to a grade"),
+    .matches(phoneRegExp, "Phone number of student or guardian is not valid")
+    .required("A valid phone number for student or guardian is required"),
+  address: yup.string().required("Student address is required"),
+  grade: yup.string().required("Student must belong to a grade"),
 });
 const initialVals = {
   firstName: "",
   lastName: "",
   email: "",
-  contact: "",
+  contactNumber: "",
   address: "",
   grade: "",
-  type: 1,
 };
 
 export default Form;

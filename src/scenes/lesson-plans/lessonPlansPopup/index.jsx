@@ -41,7 +41,6 @@ const LessonPlansPopup = (props) => {
 
     const updateComments = async () => {
     // Logic to update comments
-    console.log(JSON.stringify(updatedComments,null,2));
     let response = await updateLessonPlanComments(updatedComments);
     // TODO:Give error popup in the event updating comments fail
     onClose();
