@@ -14,12 +14,12 @@ const Login = () => {
     const from = location.state?.from?.pathname || "/";
 
     const handleSubmit = async (values) => {
-        const {id, name, grade, role, token} = await signIn(values.email, values.password);
-        if(token !== null && token !== undefined) {
+        const {id, name, grade, role, token, message} = await signIn(values.email, values.password);
+        if(token !== null && (token !== undefined || token !== null)) {
             setAuth({email: values.email, name, grade, id, role, token});
             navigate(from, { replace: true});
         }else {
-            alert("Invalid credentials");
+            alert(message);
         }
     }
     return (

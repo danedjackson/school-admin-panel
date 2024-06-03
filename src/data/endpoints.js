@@ -18,9 +18,19 @@ export const signIn = async(email, password) => {
     });
 
     if(!response.ok) {
-      throw new Error(`Network response was not ok when saving student score data. Status: ${response.status}`);
+      throw new Error(`Network response was not ok when logging in. Status: ${response.status}`);
     }
     const data = await response.json();
+    if(data.httpStatus != 'FOUND'){
+      return {
+        id: null,
+        name: null,
+        grade: null,
+        token: null,
+        role: null,
+        message: data?.message,
+      }
+    }   
     sessionStorage.setItem('token', data?.response?.token);
 
     return {
@@ -28,10 +38,18 @@ export const signIn = async(email, password) => {
       name: data?.response?.firstName,
       grade: data?.response?.grade,
       token: data?.response?.token,
-      role: data?.response?.role
+      role: data?.response?.role,
+      message: data?.response?.message,
     }    
   } catch (error) {
-    console.error(`Error saving student score data: ${error}`);
+    return {
+      id: null,
+      name: null,
+      grade: null,
+      token: null,
+      role: null,
+      message: error
+    }    
   }
 }
 
