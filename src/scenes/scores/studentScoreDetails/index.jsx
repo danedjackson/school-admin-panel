@@ -61,6 +61,7 @@ const StudentScoreDetails = () => {
         { field: 'grade', headerName: 'GRADE', flex: 1},
         { field: 'score', headerName: 'SCORE', flex: 1 },
         { field: 'dateRecorded', headerName: 'DATE RECORDED', flex: 1 },
+        { field: 'dateAdministered', headerName: 'DATE ADMINISTERED', flex: 1 },
         { field: 'comment', headerName: 'COMMENTS', flex: 2},
         // Calls popup component
         { field: 'edit',headerName: 'EDIT', flex: 1, 

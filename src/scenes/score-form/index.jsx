@@ -9,6 +9,10 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import Autocomplete from '@mui/material/Autocomplete';
 import useAuth from '../../hooks/useAuth';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const getDate = () => {
   const date = new Date();
@@ -23,6 +27,7 @@ const ScoreForm = () => {
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [selectedAssignmentType, setAssignmentType] = useState(null);
   const [studentNamesDropdown, setStudentNamesDropdown] = useState([]);
+  const [selectedDate, setDate] = useState(null);
   const { auth } = useAuth();
 
   useEffect(() => {
@@ -53,6 +58,7 @@ const ScoreForm = () => {
     values.name = selectedName;
     values.subject = selectedSubject?.toLowerCase();
     values.assignmentType = selectedAssignmentType;
+    values.dateAdministered = selectedDate;
     values.teacherId = auth?.id;
 
     const studentNameRecord = studentNamesDropdown.find(student => student.label === selectedName);
@@ -95,7 +101,7 @@ const ScoreForm = () => {
 
   return (
     <Box m="20px">
-      <Header title="CREATE USER" subtitle="Create a New User Profile" />
+      <Header title="ADD STUDENT SCORE" subtitle="Add score information for a student" />
 
       <Formik
         onSubmit={(values, {resetForm}) => {
@@ -213,6 +219,22 @@ const ScoreForm = () => {
                 multiline
                 sx={{ gridColumn: "span 3" }}
               />
+            </Box>
+            <Box
+              display="flex"
+              justifyContent="left"
+              mt="20px"
+              sx={{ gridColumn: "span 3" }}
+              >
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['DatePicker']}>
+                  <DatePicker
+                    label="Date Administered"
+                    value={selectedDate}
+                    onChange={(dateValue) => setDate(dateValue)}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
             </Box>
             <Box display="flex" justifyContent="left" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
