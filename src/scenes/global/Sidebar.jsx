@@ -208,7 +208,7 @@ const Sidebar = () => {
                         />
                         <Item 
                             title = 'Add Teacher'
-                            to = '/'
+                            to = '/teachers/create-teacher'
                             icon = {<PersonOutlinedIcon />}
                             selected = {selected}
                             setSelected = {setSelected}

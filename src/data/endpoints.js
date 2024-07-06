@@ -178,6 +178,29 @@ export const createStudentRecord = async (request) => {
   }
 }
 
+export const createTeacherRecord = async (request) => {
+  request.role = 'TEACHER';
+  const endpoint = `${HOST}/v1/auth/signup`;
+  
+  try {
+    const response = await fetch(endpoint, {
+      method: `POST`,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(request),
+    });
+    if (!response.ok) {
+      throw new Error(`Network response was not ok when creating teacher record. Status: ${response.status}`);
+    }
+    const data = await response.json();
+    
+    return data;
+  } catch (error) {
+    console.error(`Error creating teacher record: ${error}`);
+  }
+}
+
 export const saveStudentScoreData = async (request) => { 
   const endpoint = `${HOST}/v1/score`;
   

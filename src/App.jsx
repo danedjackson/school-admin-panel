@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import Dashboard from './scenes/dashboard';
 import Contacts from './scenes/contacts';
 import Teachers from './scenes/teachers';
+import CreateTeacher from './scenes/teachers/createTeacher';
 import Scores from './scenes/scores';
 import Form from './scenes/form';
 import ScoreForm from './scenes/score-form';
@@ -24,6 +25,7 @@ function App() {
         <Route element={<RequireAuth/>}>
           <Route path = "/" element = {<Dashboard />} />
           <Route path = "/teachers" element = {<Teachers />} />
+          <Route path = "/teachers/create-teacher" element = {<CreateTeacher />} />
           <Route path = "/contacts" element = {<Contacts />} />
           <Route path = "/scores" element = {<Scores />} />
           <Route path = "/form" element = {<Form />} />
