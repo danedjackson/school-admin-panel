@@ -4,8 +4,16 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import { createStudentRecord } from "../../data/endpoints";
+//Date Picker
+import dayjs from 'dayjs';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const Form = () => {
+  const maxDateOfBirth = dayjs().subtract(4, 'year');
+  const minDateOfBirth = maxDateOfBirth.subtract(18, 'year');
   const isNotMobileDevice = useMediaQuery("(min-width:600px)");
   
   const handleFormSubmit = async (values, {resetForm}) => {
@@ -124,6 +132,33 @@ const Form = () => {
                 helperText={touched.address && errors.address}
                 sx={{ gridColumn: "span 3" }}
               />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer 
+                  components={['DatePicker']}
+                  sx={{gridColumn: "span 3"}}>
+                  <DatePicker
+                    label="Date of Birth"
+                    value={values.dateOfBirth}
+                    onChange={(newValue) => {
+                      handleChange({
+                        target: { name: 'dateOfBirth', value: newValue }
+                      });
+                    }}
+                    // validation message
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        variant: "filled",
+                        error: !!touched.dateOfBirth && !!errors.dateOfBirth,
+                        helperText: touched.dateOfBirth && errors.dateOfBirth,
+                      },
+                    }}
+                    sx={{gridColumn: "span 3"}}
+                    maxDate={maxDateOfBirth}
+                    minDate={minDateOfBirth}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
               <TextField
                 fullWidth
                 variant="filled"
@@ -181,6 +216,7 @@ const checkoutSchema = yup.object().shape({
     .required("A valid phone number for student or guardian is required"),
   address: yup.string().required("Student address is required"),
   grade: yup.string().required("Student must belong to a grade"),
+  dateOfBirth: yup.date().required("Date of Birth is required"),
 });
 const initialVals = {
   firstName: "",
@@ -189,6 +225,7 @@ const initialVals = {
   contactNumber: "",
   address: "",
   grade: "",
+  dateOfBirth: null,
 };
 
 export default Form;
