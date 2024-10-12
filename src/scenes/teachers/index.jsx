@@ -16,7 +16,6 @@ const Teachers = () => {
     useEffect(() => {
         const fetchTeacherData = async() => {
           const data = await getTeacherData();
-          console.log(`data: ${JSON.stringify(data, null, 2)}`);
           setTeacherData(data);
         };
 

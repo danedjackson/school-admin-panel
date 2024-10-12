@@ -101,7 +101,7 @@ const Scores = () => {
 
     const handleOpenStudentInfo = () => {
         
-        navigate('/student-info', {state:{
+        navigate('/student-score-info', {state:{
             studentId: selected[0].studentId,
             studentName: `${selected[0].firstName} ${selected[0].lastName}`,
             studentGrade: selected[0].grade,

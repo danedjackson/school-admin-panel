@@ -178,6 +178,29 @@ export const createStudentRecord = async (request) => {
   }
 }
 
+export const updateStudentRecord = async (request) => {
+  const endpoint = `${HOST}/v1/teacher/update-student`;
+
+  try {
+    const response = await fetch(endpoint, {
+      method: `PUT`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getTokenFromSession()}`
+      },
+      body: JSON.stringify(request),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const text = await response.text();
+    return text ? JSON.parse(text) : {};
+  } catch (error) {
+    console.error(`Error updating student record: ${error}`);
+    throw error;
+  }
+}
+
 export const createTeacherRecord = async (request) => {
   request.role = 'TEACHER';
   const endpoint = `${HOST}/v1/auth/signup`;
@@ -243,7 +266,6 @@ export const updateStudentScoreData = async (request) => {
     if(data.httpStatus == 'OK') {
       return data.response;
     } else if(data.httpStatus == 'NOT_MODIFIED') {
-      console.log(`Update Student Score: ${data.message}`);
       // Will be null
       return data.response;
     }

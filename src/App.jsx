@@ -30,7 +30,7 @@ function App() {
           <Route path = "/scores" element = {<Scores />} />
           <Route path = "/form" element = {<Form />} />
           <Route path = "/score-form" element = {<ScoreForm />} />
-          <Route path = "/student-info" element = {<StudentScoreDetails />} />
+          <Route path = "/student-score-info" element = {<StudentScoreDetails />} />
           <Route path = "/view-plans" element = {<LessonPlans />} />
           <Route path = "/upload-plans" element = {<UploadPlans />} />
           <Route path = "/calendar" element = {<Calendar />} />

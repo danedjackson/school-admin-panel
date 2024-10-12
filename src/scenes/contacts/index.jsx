@@ -4,6 +4,8 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
 import { getStudentData } from '../../data/endpoints';
 import Header from '../../components/Header';
+import EditIcon from '@mui/icons-material/Edit';
+import StudentDetailsPopup from '../form/popupEditStudentInfo';
 
 /**
  * Contacts component displays a grid of contact information for team members.
@@ -13,7 +15,10 @@ import Header from '../../components/Header';
 const Contacts = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  // State management
+  const [openPopup, setOpenPopup] = useState(false);
   const [studentRows, setStudentRows] = useState([]);
+  const [selectedStudent, setSelectedStudent] = useState(null);
 
   useEffect(() => {
     const fetchStudentData = async () => {
@@ -53,15 +58,42 @@ const Contacts = () => {
     { field: "contactNumber", headerName: "CONTACT NUMBER", flex: 1 },
     { field: "email", headerName: "EMAIL ADDRESS", flex: 1 },
     { field: "address", headerName: "ADDRESS", flex: 1 },
-    { field: "city", headerName: "CITY" },
-    { field: "zipCode", headerName: "ZIP CODE" },
+    // Calls popup component
+    {
+      field: 'edit', headerName: 'EDIT', flex: 1, headerAlign: 'right', align: 'right',
+      renderCell: (params) => {
+        return <EditIcon onClick={() => handleEditClick(params.row)} />
+      },
+    },
+    // { field: "city", headerName: "CITY" },
+    // { field: "zipCode", headerName: "ZIP CODE" },
   ];
 
+
+  const handleEditClick = (student) => {
+    setSelectedStudent({
+      ...student,
+      studentId: student.id
+    });
+    setOpenPopup(true);
+  };
+
+  const handleScoreDetailsPopupClose = (updatedRecord) => {
+    if (updatedRecord) {
+      // Update the studentRows state with the new data
+      setStudentRows(prevRows => 
+        prevRows.map(row => row.id === updatedRecord.id ? updatedRecord : row)
+      );
+    }
+    setOpenPopup(false);
+    setSelectedStudent(null);
+  };
+  
   return (
     <Box m="20px">
       <Header
         title="CONTACTS"
-        subtitle="Contact Information for Team Members"
+        subtitle="Contact Information for Students"
       />
       <Box
         m="40px 0 0 0"
@@ -104,6 +136,15 @@ const Contacts = () => {
           }}
         />
       </Box>
+      
+      {/* Popup component to edit student scores */}
+      <StudentDetailsPopup 
+        openPopup={openPopup}
+        setOpenPopup={setOpenPopup}
+        selected={selectedStudent ? [selectedStudent] : []}
+        title={selectedStudent ? `${selectedStudent.firstName} ${selectedStudent.lastName}` : ''}
+        onClose={handleScoreDetailsPopupClose}
+      />
     </Box>
   );
 };

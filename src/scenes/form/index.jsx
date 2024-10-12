@@ -14,6 +14,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 const Form = () => {
   const maxDateOfBirth = dayjs().subtract(4, 'year');
   const minDateOfBirth = maxDateOfBirth.subtract(18, 'year');
+  
   const isNotMobileDevice = useMediaQuery("(min-width:600px)");
   
   const handleFormSubmit = async (values, {resetForm}) => {
