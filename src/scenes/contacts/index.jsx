@@ -78,13 +78,17 @@ const Contacts = () => {
     setOpenPopup(true);
   };
 
-  const handleScoreDetailsPopupClose = (updatedRecord) => {
+  const handleDetailsPopupClose = (updatedRecord) => {
+    console.log("Received updated record:", updatedRecord);
     if (updatedRecord) {
       // Update the studentRows state with the new data
       setStudentRows(prevRows => 
-        prevRows.map(row => row.id === updatedRecord.id ? updatedRecord : row)
+        prevRows.map(row =>
+          row.id === updatedRecord.id ? { ...updatedRecord } : row
+        )
       );
     }
+    console.log("Updated studentRows:", studentRows);
     setOpenPopup(false);
     setSelectedStudent(null);
   };
@@ -143,7 +147,7 @@ const Contacts = () => {
         setOpenPopup={setOpenPopup}
         selected={selectedStudent ? [selectedStudent] : []}
         title={selectedStudent ? `${selectedStudent.firstName} ${selectedStudent.lastName}` : ''}
-        onClose={handleScoreDetailsPopupClose}
+        onClose={handleDetailsPopupClose}
       />
     </Box>
   );

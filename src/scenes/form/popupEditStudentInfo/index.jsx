@@ -12,7 +12,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 
 const StudentDetailsPopup = (props) => {
-    const { title, selected, openPopup, setOpenPopup } = props;
+    const { title, selected, openPopup, setOpenPopup, onClose } = props;
     const { auth } = useAuth();
     
     const maxDateOfBirth = dayjs().subtract(4, 'year');
@@ -30,20 +30,22 @@ const StudentDetailsPopup = (props) => {
     
     const updateStudentInfo = async (selected, values) => {
         const request = {
-            ...values, 
-            id: selected[0]?.studentId,
-            teacherId: auth?.id,
+          ...values, 
+          id: selected[0]?.studentId,
+          teacherId: auth?.id,
         };
         const updatedRecord = await updateStudentRecord(request);
-        if (null == updatedRecord) {
-            //TODO: Make a toast message which displays "No changes made"
-            return;
+        if (updatedRecord === null) {
+          // Show a message if no changes are made
+          return;
         }
         
-        props.onClose(updatedRecord);
-
+        // Pass the updated record back to the parent through the onClose callback
+        onClose(updatedRecord.response);
+        
+        // Close the popup
         setOpenPopup(false);
-    }
+    };
     
     return (
         <Dialog open = {openPopup}>

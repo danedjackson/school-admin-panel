@@ -53,6 +53,17 @@ export const LessonPlans = () => {
   const handleClosePopup = () => {
     setOpenPopup(false); // Close the popup
   };
+  
+  // Function to update lesson plans in the teacher list after a successful comment update
+  const handleUpdateLessonPlans = (updatedLessonPlans) => {
+    setTeachersWithLessonPlans(prevTeachers =>
+      prevTeachers.map(teacher =>
+        teacher.id === selectedTeacher.id
+          ? { ...teacher, lessonPlans: updatedLessonPlans }
+          : teacher
+      )
+    );
+  };
 
   return (
     <Box m="20px">
@@ -102,6 +113,7 @@ export const LessonPlans = () => {
           teacher={selectedTeacher} 
           openPopup={openPopup} // Pass the state to manage popup visibility
           onClose={handleClosePopup} // Pass the function to close the popup
+          onUpdateLessonPlans={handleUpdateLessonPlans} // Pass the update function to update lesson plan comments
         />
       </Box>
     </Box>

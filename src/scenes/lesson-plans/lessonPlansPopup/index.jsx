@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { getLessonPlanDocument, updateLessonPlanComments } from '../../../data/endpoints';
 
 const LessonPlansPopup = (props) => {
-    const { teacher, openPopup, onClose } = props;
+    const { teacher, openPopup, onClose, onUpdateLessonPlans } = props;
     const [lessonPlanDocument, setLessonPlanDocument] = useState([]);
     const [updatedComments, setUpdatedComments] = useState({});
 
@@ -40,11 +40,27 @@ const LessonPlansPopup = (props) => {
     }
 
     const updateComments = async () => {
-    // Logic to update comments
-    let response = await updateLessonPlanComments(updatedComments);
-    // TODO:Give error popup in the event updating comments fail
-    onClose();
-  };
+        // Logic to update comments
+        let response = await updateLessonPlanComments(updatedComments);
+        
+        if (response && response.httpStatus === 'OK') {
+            const updatedLessonPlans = teacher.lessonPlans.map(plan => ({
+                ...plan,
+                comments: updatedComments[plan.id] || plan.comments  // Update only if there's a new comment for this plan
+            }));
+            
+            // Call the parent component's update function with the modified lesson plans
+            onUpdateLessonPlans(updatedLessonPlans);
+            // Clear `updatedComments` after successfully saving
+            setUpdatedComments({});
+
+            alert("Comments updated successfully!");
+            //onClose();
+        } else {
+            console.error("Failed to update comments");
+            // TODO:Give error popup in the event updating comments fail
+        }
+    };
 
     // TODO: Make it possible to adjust comment in this popup
     return (
