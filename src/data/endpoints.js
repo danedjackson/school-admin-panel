@@ -462,7 +462,7 @@ export const removeSubject = async (subjectName) => {
   const endpoint = `${HOST}/v1/subjects/remove/${subjectName}`;
   try {
     const response = await fetch(endpoint, {
-      method: 'DELETE',
+      method: 'POST',
       headers: {
         'Authorization': `Bearer ${getTokenFromSession()}`
       }
