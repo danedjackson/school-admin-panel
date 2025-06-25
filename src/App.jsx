@@ -14,6 +14,8 @@ import Layout from './components/Layout';
 import RequireAuth from './auth/RequireAuth';
 import UploadPlans from './scenes/lesson-plans/upload-plans';
 import LessonPlans  from './scenes/lesson-plans/view-plans';
+import Subjects from './scenes/subjects';
+import CreateSubject from './scenes/subjects/createSubject';
 
 function App() {
     
@@ -33,6 +35,8 @@ function App() {
           <Route path = "/student-score-info" element = {<StudentScoreDetails />} />
           <Route path = "/view-plans" element = {<LessonPlans />} />
           <Route path = "/upload-plans" element = {<UploadPlans />} />
+          <Route path = "/subjects/createSubject" element = {<CreateSubject />} />
+          <Route path = "/subjects" element = {<Subjects />} />
           <Route path = "/calendar" element = {<Calendar />} />
           <Route path = "/faq" element = {<FAQ />} />
         </Route>
