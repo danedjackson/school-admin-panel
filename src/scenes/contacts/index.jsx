@@ -49,6 +49,12 @@ const Contacts = () => {
       cellClassName: "last-name-column--cell",
     },
     {
+      field: "grade",
+      headerName: "GRADE",
+      flex: 1,
+      cellClassName: "grade-column--cell",
+    },
+    {
       field: "age",
       headerName: "AGE",
       type: "number",
@@ -79,7 +85,6 @@ const Contacts = () => {
   };
 
   const handleDetailsPopupClose = (updatedRecord) => {
-    console.log("Received updated record:", updatedRecord);
     if (updatedRecord) {
       // Update the studentRows state with the new data
       setStudentRows(prevRows => 
@@ -88,7 +93,6 @@ const Contacts = () => {
         )
       );
     }
-    console.log("Updated studentRows:", studentRows);
     setOpenPopup(false);
     setSelectedStudent(null);
   };
