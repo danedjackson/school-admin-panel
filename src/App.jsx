@@ -15,7 +15,7 @@ import RequireAuth from './auth/RequireAuth';
 import UploadPlans from './scenes/lesson-plans/upload-plans';
 import LessonPlans  from './scenes/lesson-plans/view-plans';
 import Subjects from './scenes/subjects';
-import CreateSubject from './scenes/subjects/createSubject';
+import CreateSubject from './scenes/subjects/createSubjectPopup';
 
 function App() {
     
