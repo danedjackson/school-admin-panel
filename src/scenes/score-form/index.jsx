@@ -28,6 +28,7 @@ const ScoreForm = () => {
   const [selectedAssignmentType, setAssignmentType] = useState(null);
   const [studentNamesDropdown, setStudentNamesDropdown] = useState([]);
   const [selectedDate, setDate] = useState(null);
+  const [subjects, setSubjects] = useState([]);
   const { auth } = useAuth();
 
   useEffect(() => {
@@ -40,14 +41,22 @@ const ScoreForm = () => {
       }
     };
 
+    const fetchSubjects = async () => {
+      try {
+        const data = await getSubjectDropdownData();
+        setSubjects(data);
+      } catch (error) {
+        console.error('Error fetching subjects:', error);
+      }
+    };
+
     fetchStudentNames();
+    fetchSubjects();
   }, []);
 
   const isNotMobileDevice = useMediaQuery("(min-width:600px)");
 
   const assignmentType = getAssignmentDropdownData();
-
-  const subjects = getSubjectDropdownData();
 
   // Handle form submission
   const handleFormSubmit = (values) => {

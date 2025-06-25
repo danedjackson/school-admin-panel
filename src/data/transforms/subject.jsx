@@ -1,11 +1,8 @@
-export const getSubjectDropdownData = () => {
-    return [
-        { label: 'Art' },
-        { label: "English" },
-        { label: "Mathematics" },
-        { label: "Phonics" },
-        { label: "Science" }
-      ]
+import { getAllSubjects } from '../endpoints';
+
+export const getSubjectDropdownData = async () => {
+    const subjectNames = await getAllSubjects();
+    return subjectNames.map(name => ({ label: name }));
 }
 
 export const getAssignmentDropdownData = () => {

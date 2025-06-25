@@ -2,7 +2,7 @@ import { Box, Button, Typography, useTheme } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { tokens } from '../../theme';
-import { scoreData } from '../../data/endpoints';
+import { getAllSubjects, scoreData } from '../../data/endpoints';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import EditIcon from '@mui/icons-material/Edit';
@@ -14,6 +14,10 @@ const Scores = () => {
     const colors = tokens(theme.palette.mode);
     const [selected, setSelected] = useState([]);
     const [scoreRows, setScoreRows] = useState([]);
+    const [subjectFields, setSubjectFields] = useState([
+        // fallback static fields if API fails
+        'mathematics', 'science', 'english', 'art', 'phonics'
+    ]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -29,72 +33,50 @@ const Scores = () => {
         fetchData();
       }, [auth?.grade]);
 
+    useEffect(() => {
+        const fetchSubjects = async () => {
+            try {
+                const subjects = await getAllSubjects();
+                // Lowercase for matching averages keys
+                setSubjectFields(subjects.map(s => s.toLowerCase()));
+            } catch (error) {
+                // fallback to static fields
+            }
+        };
+        fetchSubjects();
+    }, []);
+
+    // Dynamically build columns for subjects
+    const subjectColumns = subjectFields.map(subject => ({
+        field: subject,
+        headerName: subject.toUpperCase(),
+        flex: 1,
+        type: 'number',
+        valueGetter: (params) => params.row.averages?.[subject]?.average || null,
+        headerAlign: 'left',
+        align: 'left',
+        renderCell: (params) => (
+            <Typography color={colors.greenAccent[500]}>
+                {params.value === null ? "N/A" : params.value}
+            </Typography>
+        )
+    }));
+
     const columns = [
-        //{ field: 'id', headerName: 'ID'}, 
         { field: 'firstName', headerName: 'FIRST NAME', flex: 1 },
         { field: 'middleName', headerName: 'MIDDLE NAME', flex: 1 },
         { field: 'lastName', headerName: 'LAST NAME', flex: 1 },
         { field: 'grade', headerName: 'GRADE', flex: 1 },
+        ...subjectColumns,
         {
-            field: 'mathematics', headerName: 'MATHEMATICS', flex: 1, type: 'number', headerAlign: 'left', align: 'left',
-            valueGetter: (params) => params.row.averages?.mathematics?.average || null,
-            renderCell: (params) => {
-            return (
-                <Typography color={colors.greenAccent[500]}>
-                    {params.value === null ? "N/A" : params.value}
-                </Typography>
-            );
-            }
-        },
-        { field: 'science', headerName: 'SCIENCE', flex: 1, type: 'number', 
-            valueGetter: (params) => params.row.averages?.science?.average || null, headerAlign: 'left', align: 'left',
-            renderCell: (params) => {
-            return (
-                <Typography color={colors.greenAccent[500]}>
-                    {params.value === null ? "N/A" : params.value}
-                </Typography>
-            );
-            }
-        },
-        { field: 'english', headerName: 'ENGLISH', flex: 1, type: 'number', 
-            valueGetter: (params) => params.row.averages?.english?.average || null, headerAlign: 'left', align: 'left',
-            renderCell: (params) => {
-            return (
-                <Typography color={colors.greenAccent[500]}>
-                    {params.value === null ? "N/A" : params.value}
-                </Typography>
-            );
-            }
-        },
-        { field: 'art', headerName: 'ART', flex: 1, type: 'number',
-            valueGetter: (params) => params.row.averages?.art?.average || null, headerAlign: 'left', align: 'left',
-            renderCell: (params) => {
-            return (
-                <Typography color={colors.greenAccent[500]}>
-                    {params.value === null ? "N/A" : params.value}
-                </Typography>
-            );
-            }
-        },
-        { field: 'phonics', headerName: 'PHONICS', flex: 1, type: 'number',
-            valueGetter: (params) => params.row.averages?.phonics?.average || null, headerAlign: 'left', align: 'left',
-            renderCell: (params) => {
-            return (
-                <Typography color={colors.greenAccent[500]}>
-                    {params.value === null ? "N/A" : params.value}
-                </Typography>
-            );
-            }
-        },
-        // Only activate the edit icon when a single row is selected
-        {   flex: 1, 
+            flex: 1,
             field: "edit",
             headerName: "",
             renderCell: (params) => {
-            const rowIsSelected = selected.includes(params.row);
-            return rowIsSelected && selected.length == 1? (
-                <EditIcon onClick={handleOpenStudentInfo} />
-            ) : null;
+                const rowIsSelected = selected.includes(params.row);
+                return rowIsSelected && selected.length == 1 ? (
+                    <EditIcon onClick={handleOpenStudentInfo} />
+                ) : null;
             },
         }
     ]
