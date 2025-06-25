@@ -3,22 +3,24 @@ import { Dialog, DialogTitle, DialogContent } from '@mui/material';
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
 import Header from '../../../components/Header';
+import { saveSubject } from '../../../data/endpoints';
 
 const CreateSubjectPopup = (props) => {
     const { openPopup, setOpenPopup, onClose } = props;
 
     const initialVals = {
-        subjectName: '',
-        subjectCode: ''
+        subjectName: ''
     };
 
-    const handleSubmit = (values, { resetForm }) => {
-        // Add logic to handle subject addition
-        console.log('Subject Added:', { subjectName: values.subjectName, subjectCode: values.subjectCode });
-
-        // Optionally call onClose with new subject data
-        if (onClose) onClose({ subjectName: values.subjectName, subjectCode: values.subjectCode });
-
+    const handleSubmit = async (values, { resetForm }) => {
+        try {
+            // Call saveSubject endpoint
+            await saveSubject(values.subjectName);
+            // Optionally call onClose with new subject name
+            if (onClose) onClose(values.subjectName);
+        } catch (error) {
+            console.error('Error saving subject:', error);
+        }
         // Reset form fields and close popup
         resetForm();
         setOpenPopup(false);
@@ -66,18 +68,6 @@ const CreateSubjectPopup = (props) => {
                                         onChange={handleChange}
                                         value={values.subjectName}
                                         name="subjectName"
-                                        required
-                                        sx={{ gridColumn: "span 2" }}
-                                    />
-                                    <TextField
-                                        fullWidth
-                                        variant="filled"
-                                        type="text"
-                                        label="Subject Code"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        value={values.subjectCode}
-                                        name="subjectCode"
                                         required
                                         sx={{ gridColumn: "span 2" }}
                                     />
