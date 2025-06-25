@@ -4,21 +4,29 @@ import { Box, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { tokens } from '../../../theme';
 import Header from '../../../components/Header';
-import LessonPlansPopup from '../lessonPlansPopup'; // Import the LessonPlansPopup component
+import LessonPlansPopup from '../lessonPlansPopup';
 
 export const LessonPlans = () => {
-
   const [teachersWithLessonPlans, setTeachersWithLessonPlans] = useState([]);
-  const [openPopup, setOpenPopup] = useState(false); // State to manage the popup visibility
-  const [selectedTeacher, setSelectedTeacher] = useState(null); // State to track the selected teacher
+  const [openPopup, setOpenPopup] = useState(false);
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   useEffect(() => {
     const fetchTeachersWithLessonPlans = async () => {
-      const plans = await getAllTeachersWithLessonPlans();
-      setTeachersWithLessonPlans(plans.response);
-    }
+      try {
+        const plans = await getAllTeachersWithLessonPlans();
+        if (plans && Array.isArray(plans.response)) {
+          setTeachersWithLessonPlans(plans.response);
+        } else {
+          setTeachersWithLessonPlans([]);
+        }
+      } catch (error) {
+        setTeachersWithLessonPlans([]);
+        console.error('Error fetching lesson plans:', error);
+      }
+    };
     fetchTeachersWithLessonPlans();
   }, []);
 
@@ -46,15 +54,14 @@ export const LessonPlans = () => {
   ];
 
   const handleRowClick = (params) => {
-    setSelectedTeacher(params.row); // Set the selected teacher when a row is clicked
-    setOpenPopup(true); // Open the popup
+    setSelectedTeacher(params.row);
+    setOpenPopup(true);
   };
 
   const handleClosePopup = () => {
-    setOpenPopup(false); // Close the popup
+    setOpenPopup(false);
   };
-  
-  // Function to update lesson plans in the teacher list after a successful comment update
+
   const handleUpdateLessonPlans = (updatedLessonPlans) => {
     setTeachersWithLessonPlans(prevTeachers =>
       prevTeachers.map(teacher =>
@@ -74,7 +81,6 @@ export const LessonPlans = () => {
       <Box
         m="40px 0 0 0"
         height="75vh"
-        // Adjusting the properties for the MUI DataGrid
         sx={{
           "& .MuiDataGrid-root": {
             border: "none",
@@ -105,19 +111,22 @@ export const LessonPlans = () => {
         }}
       >
         <DataGrid
-          rows={teachersWithLessonPlans}
+          rows={Array.isArray(teachersWithLessonPlans) ? teachersWithLessonPlans : []}
           columns={columns}
-          onRowClick={handleRowClick} // Call handleRowClick when a row is clicked
+          onRowClick={handleRowClick}
+          getRowId={(row) => row.id || `${row.firstName}-${row.lastName}-${row.email}`}
+          disableSelectionOnClick
+          autoHeight
         />
         <LessonPlansPopup 
           teacher={selectedTeacher} 
-          openPopup={openPopup} // Pass the state to manage popup visibility
-          onClose={handleClosePopup} // Pass the function to close the popup
-          onUpdateLessonPlans={handleUpdateLessonPlans} // Pass the update function to update lesson plan comments
+          openPopup={openPopup}
+          onClose={handleClosePopup}
+          onUpdateLessonPlans={handleUpdateLessonPlans}
         />
       </Box>
     </Box>
-  )
-}
+  );
+};
 
 export default LessonPlans;
